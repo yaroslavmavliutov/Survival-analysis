@@ -46,9 +46,9 @@ def kaplan_mayer(time):
         else:
             Function_distribution.append(Frequency_percent[i])
     #print("Function_distribution: ", Function_distribution)
-    Survival_function = []
-    for i in range(0, len(Function_distribution)):
-        Survival_function.append(1 - Function_distribution[i])
+    Survival_function = [(1 - i) for i in Function_distribution]
+    # for i in range(0, len(Function_distribution)):
+    #     Survival_function.append(1 - Function_distribution[i])
     Risk_function = [(Function_distribution[i+1] - Function_distribution[i])/Survival_function[i] for i in range(0, len(Function_distribution) - 1)]
     #print("Risk: ", Risk_function)
     #del karman[len(karman) - 1]  # щоб розмірності співпадали
@@ -87,17 +87,43 @@ def kaplan_mayer(time):
 def toFixed(numObj, digits=0):
     return f"{numObj:.{digits}f}"
 
+def frange(start, stop, step):
+    opt = start
+    while opt < stop:
+        yield opt
+        opt += step
+
 def Approximately_e(X_Array, Y_Array):
     x = numpy.asarray(X_Array)
     y = numpy.asarray(Y_Array)
 
     arr1 = numpy.polyfit(x, numpy.log(y), 1)    # y ≈ exp(arr[0]) * exp(arr[1] * x) = const * exp(arr[1] * x)
-    x_range = [i for i in range(min(X_Array), max(X_Array))]
+    x_range = [i for i in frange(min(X_Array), max(X_Array), 0.1)]
     fun = [math.exp(arr1[1])*math.exp(arr1[0]*i) for i in x_range]
+
+    # Обмежую y зверху одиницею
+    while fun[len(fun) - 1] < 1:
+        x_range.append(max(x_range) + 0.1)
+        fun.append(math.exp(arr1[1]) * math.exp(arr1[0] * (max(x_range) + 0.1)))
+    # якщо y > 1, то видаляю цей елемент
+    for i in range(len(fun) - 1, 0, -1):
+        if fun[i] > 1:
+            del fun[i]
+            del x_range[i]
+
+    print("x ", x_range)
+    print("y ", fun)
     return fun, x_range
 
+def New_Survive_fun(h, x):
+    surv = [1]
+    for i in range(0, len(h)):
+        surv.append((1 - h[i])*surv[i])
+    return surv[:-1], x
+
+
 def main():
-    for i in range(0, 1):
+    for i in range(0, 3):
         age = float(input("age(1-3): "))
         virus = float(input("virus(0-1): "))
         time = load_data("Data.xlsx", age, virus)
@@ -107,16 +133,21 @@ def main():
             continue
         name_s = name + ', Area: ' + str(toFixed(sum(s), 3))
 
-        plt.figure(1)
-        plt.plot(karman1, s, label=name_s)
-        plt.legend(loc='upper right')
-
-        plt.figure(2)
         f, xr = Approximately_e(karman, h)
-        #plt.plot(karman, h, 'o', label=name, markersize=10)
+        plt.figure(2)
+        plt.plot(karman, h, 'o', label=name, markersize=10)
         plt.plot(xr, f, linewidth=2, label=name)
         plt.legend(loc='upper left')
         plt.grid(True)
+
+        new_s, new_x = New_Survive_fun(f, xr)
+        nname_s = name + ', Area: ' + str(toFixed(sum(new_s), 3))
+
+        plt.figure(1)
+        plt.plot(karman1, s, label=name_s)
+        plt.plot(new_x, new_s, label=nname_s)
+        plt.legend(loc='upper right')
+
 
     plt.show()
 
