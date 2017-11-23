@@ -2,8 +2,10 @@ import xlrd
 from itertools import takewhile
 from collections import Counter
 import math
-import numpy
+import numpy as np
 import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+
 
 def load_data(name_file, age, virus):
     time_bed_days = [] # час, кількість ліжко/днів
@@ -45,6 +47,8 @@ def kaplan_mayer(time):
             Function_distribution.append(Frequency_percent[i] + Function_distribution[i-1])
         else:
             Function_distribution.append(Frequency_percent[i])
+    if Function_distribution[len(Function_distribution) - 1] > 1:
+        Function_distribution[len(Function_distribution) - 1] = 1
     #print("Function_distribution: ", Function_distribution)
     Survival_function = [(1 - i) for i in Function_distribution]
     # for i in range(0, len(Function_distribution)):
@@ -59,7 +63,7 @@ def kaplan_mayer(time):
             Risk_function2.append(Risk_function[i])
             karman2.append(karman[i+1])
     #return Survival_function, karman, Smoothing(Risk_function)
-    return [1]+Survival_function, [0]+karman2, [0.1*Risk_function2[0]]+Risk_function2, [0]+karman
+    return [0.99]+Survival_function, [0]+karman2, [0.1*Risk_function2[0]]+Risk_function2, [0]+karman
 
 
 # def Smoothing(list):
@@ -94,10 +98,10 @@ def frange(start, stop, step):
         opt += step
 
 def Approximately_e(X_Array, Y_Array):
-    x = numpy.asarray(X_Array)
-    y = numpy.asarray(Y_Array)
+    x = np.asarray(X_Array)
+    y = np.asarray(Y_Array)
 
-    arr1 = numpy.polyfit(x, numpy.log(y), 1)    # y ≈ exp(arr[0]) * exp(arr[1] * x) = const * exp(arr[1] * x)
+    arr1 = np.polyfit(x, np.log(y), 1)    # y ≈ exp(arr[0]) * exp(arr[1] * x) = const * exp(arr[1] * x)
     x_range = [i for i in frange(min(X_Array), max(X_Array), 0.1)]
     fun = [math.exp(arr1[1])*math.exp(arr1[0]*i) for i in x_range]
 
@@ -110,20 +114,43 @@ def Approximately_e(X_Array, Y_Array):
         if fun[i] > 1:
             del fun[i]
             del x_range[i]
+        else:
+            continue
 
-    print("x ", x_range)
-    print("y ", fun)
     return fun, x_range
 
-def New_Survive_fun(h, x):
-    surv = [1]
-    for i in range(0, len(h)):
-        surv.append((1 - h[i])*surv[i])
-    return surv[:-1], x
+def New_Survive_fun(Y_Array, X_Array):
+    for i in range(len(Y_Array) - 1, 0, -1):
+        if Y_Array[i] == 0:
+            del Y_Array[i]
+            del X_Array[i]
+        else:
+            continue
+
+    x = np.asarray(X_Array)
+    y = np.asarray(Y_Array)
+
+    arr1 = np.polyfit(x, np.log(abs((1/y) - 1)), 1)
+    x_range = [i for i in frange(0, max(X_Array), 0.01)]
+    fun = [1/( 1 + math.exp(arr1[1]) * math.exp(arr1[0] * i)) for i in x_range]
+
+    while fun[len(fun) - 1] > 0.01:
+        x_range.append(max(x_range) + 0.01)
+        fun.append(1/( 1 + math.exp(arr1[1]) * math.exp(arr1[0] * (max(x_range) + 0.01))))
+    for i in range(len(fun) - 1, 0, -1):
+        if fun[i] < 0:
+            del fun[i]
+            del x_range[i]
+        else:
+            continue
+
+    return fun, x_range
+
+
 
 
 def main():
-    for i in range(0, 3):
+    for i in range(0, 1):
         age = float(input("age(1-3): "))
         virus = float(input("virus(0-1): "))
         time = load_data("Data.xlsx", age, virus)
@@ -140,11 +167,11 @@ def main():
         plt.legend(loc='upper left')
         plt.grid(True)
 
-        new_s, new_x = New_Survive_fun(f, xr)
+        new_s, new_x = New_Survive_fun(s, karman1)
         nname_s = name + ', Area: ' + str(toFixed(sum(new_s), 3))
 
         plt.figure(1)
-        plt.plot(karman1, s, label=name_s)
+        # plt.plot(karman1, s, label=name_s)
         plt.plot(new_x, new_s, label=nname_s)
         plt.legend(loc='upper right')
 
