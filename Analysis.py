@@ -4,6 +4,7 @@ from collections import Counter
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
 from scipy.interpolate import interp1d
 
 
@@ -144,37 +145,53 @@ def New_Survive_fun(Y_Array, X_Array):
         else:
             continue
 
+    # порахуємо h
+    # H = [(1 - fun[i + 1] / fun[i]) for i in range(0, len(fun) - 1)]
+    # print(H)
     return fun, x_range
 
 
 
 
 def main():
-    for i in range(0, 1):
-        age = float(input("age(1-3): "))
-        virus = float(input("virus(0-1): "))
-        time = load_data("Data.xlsx", age, virus)
-        name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
-        s, karman, h, karman1 = kaplan_mayer(time)
-        if s == [0] and karman == [0]:
-            continue
-        name_s = name + ', Area: ' + str(toFixed(sum(s), 3))
+    age = int(input("number: "))
+    if age == 1:
+        for i in range(0, 2):
+            age = float(input("age(1-3): "))
+            virus = float(input("virus(0-1): "))
+            time = load_data("Data.xlsx", age, virus)
+            name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
+            s, karman, h, karman1 = kaplan_mayer(time)
+            if s == [0] and karman == [0]:
+                continue
+            name_s = name + ', Area: ' + str(toFixed(sum(s), 3))
 
-        f, xr = Approximately_e(karman, h)
-        plt.figure(2)
-        plt.plot(karman, h, 'o', label=name, markersize=10)
-        plt.plot(xr, f, linewidth=2, label=name)
-        plt.legend(loc='upper left')
-        plt.grid(True)
+            f, xr = Approximately_e(karman, h)
 
-        new_s, new_x = New_Survive_fun(s, karman1)
-        nname_s = name + ', Area: ' + str(toFixed(sum(new_s), 3))
+            new_s, new_x = New_Survive_fun(s, karman1)
+            nname_s = name + ', Area: ' + str(toFixed(sum(new_s), 3))
+            plt.figure(1)
+            # plt.plot(karman1, s, label=name_s)
+            plt.plot(new_x, new_s, label=nname_s)
+            plt.legend(loc='upper right')
 
-        plt.figure(1)
-        # plt.plot(karman1, s, label=name_s)
-        plt.plot(new_x, new_s, label=nname_s)
-        plt.legend(loc='upper right')
-
+            del new_x[len(new_x) - 1]
+            plt.figure(2)
+            #plt.plot(karman, h, 'o', label=name, markersize=10)
+            plt.plot(xr, f, linewidth=2, label=name)
+            plt.legend(loc='upper left')
+            plt.grid(True)
+    elif age == 2:
+        for i in range(0, 6):
+            age = float(input("age(1-3): "))
+            virus = float(input("virus(0-1): "))
+            time = load_data("Data.xlsx", age, virus)
+            alfa = 0.05  # уровень значимости
+            n = np.array(time).size - 1  # число степеней свободы
+            t = stats.t(n)
+            tcr = t.ppf(1 - alfa / 2)
+            print("<queue_mean>", np.mean(np.array(time)))
+            print("<queue_di>", tcr * np.std(np.array(time)) / math.sqrt(np.array(time).size))
 
     plt.show()
 
