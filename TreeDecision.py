@@ -4,7 +4,7 @@ from sklearn import preprocessing
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LogisticRegression
-from Data import pars
+from ParsingData import pars
 
 from sklearn.metrics import *
 from sklearn.linear_model import LogisticRegression
