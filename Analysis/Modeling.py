@@ -25,8 +25,8 @@ def load_data(name_file, age, virus):
                 col_len -= 1
             for k in range(col_len):
                  # обмежуємо вибірку за параметрами
-                if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
-                    time_bed_days.append(sheet.cell_value(k, i))
+                 if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
+                     time_bed_days.append(sheet.cell_value(k, i))
     #del time_bed_days[0]
     #print("Time: ", time_bed_days)
     return time_bed_days
