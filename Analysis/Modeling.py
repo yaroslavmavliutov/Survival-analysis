@@ -5,6 +5,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
+import scipy as sp
 from scipy.interpolate import interp1d
 
 
@@ -154,8 +155,9 @@ def New_Survive_fun(Y_Array, X_Array):
 
 
 def main():
-    age = int(input("number: "))
-    if age == 1:
+    print('1 - curves, 2 - distribution')
+    num = int(input("number: "))
+    if num == 1:
         for i in range(0, 2):
             age = float(input("age(1-3): "))
             virus = float(input("virus(0-1): "))
@@ -181,8 +183,8 @@ def main():
             plt.plot(xr, f, linewidth=2, label=name)
             plt.legend(loc='upper left')
             plt.grid(True)
-    elif age == 2:
-        for i in range(0, 6):
+    elif num == 2:
+        for i in range(0, 2):
             age = float(input("age(1-3): "))
             virus = float(input("virus(0-1): "))
             time = load_data("Data.xlsx", age, virus)
@@ -190,8 +192,21 @@ def main():
             n = np.array(time).size - 1  # число степеней свободы
             t = stats.t(n)
             tcr = t.ppf(1 - alfa / 2)
-            print("<queue_mean>", np.mean(np.array(time)))
-            print("<queue_di>", tcr * np.std(np.array(time)) / math.sqrt(np.array(time).size))
+            queue_di = tcr * np.std(np.array(time)) / math.sqrt(np.array(time).size)
+            #print("<queue_mean>", np.mean(np.array(time)))
+            #print("<queue_di>", queue_di)
+            print('[ ', np.mean(np.array(time)) - queue_di, ' ; ', np.mean(np.array(time)), ' ; ',
+                  np.mean(np.array(time)) + queue_di, ' ]')
+            #print("left", np.mean(np.array(time)) - queue_di)
+            #print("right>", np.mean(np.array(time)) + queue_di)
+
+            #Інший спосіб підрахунку довірчого (те саме)
+            # confidence=0.95
+            # a = 1.0 * np.array(time)
+            # n = len(a)
+            # m, se = np.mean(a), stats.sem(a)
+            # h = se * sp.stats.t._ppf((1 + confidence) / 2., n - 1)
+            # print(m,' e ', m - h,' f ', m + h)
 
     plt.show()
 
