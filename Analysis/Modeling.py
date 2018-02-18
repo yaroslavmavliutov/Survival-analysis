@@ -26,7 +26,8 @@ def load_data(name_file, age, virus):
                 col_len -= 1
             for k in range(col_len):
                  # обмежуємо вибірку за параметрами
-                 if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
+                 #if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
+                 if sheet.cell_value(k, column_VIRUS) == virus:
                      time_bed_days.append(sheet.cell_value(k, i))
     #del time_bed_days[0]
     #print("Time: ", time_bed_days)
@@ -175,6 +176,27 @@ def main():
             plt.figure(1)
             # plt.plot(karman1, s, label=name_s)
             plt.plot(new_x, new_s, label=nname_s)
+            # print(len(new_x))
+            # try: print(new_s[310])
+            # except: print(0)
+            # try: print(new_s[620])
+            # except: print(0)
+            # try: print(new_s[930])
+            # except: print(0)
+            # try: print(new_s[1240])
+            # except: print(0)
+            # try: print(new_s[1550])
+            # except: print(0)
+            # try: print(new_s[1860])
+            # except: print(0)
+            # try: print(new_s[2170])
+            # except: print(0)
+            # try: print(new_s[2480])
+            # except: print(0)
+            # try: print(new_s[2790])
+            # except: print(0)
+            # try: print(new_s[3099])
+            # except: print(0)
             plt.legend(loc='upper right')
 
             del new_x[len(new_x) - 1]
