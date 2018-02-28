@@ -15,10 +15,9 @@ def pars():
     df_tem = df[col_list_tem]
     return df_tem
 
-def ProbabilityArrayTemperature(data_tem):
+def ArrayTemperature(data_tem):
     Stan_tem = np.zeros((3, 3))
     for element in range(0, len(data_tem)):
-
         # 0 день
         if data_tem.iloc[element][0] == 0:
             Stan_tem[2][0] = Stan_tem[2][0] + 1
@@ -42,35 +41,53 @@ def ProbabilityArrayTemperature(data_tem):
             Stan_tem[1][2] = Stan_tem[1][2] + 1
         if data_tem.iloc[element][2] == 2:
             Stan_tem[0][2] = Stan_tem[0][2] + 1
-    return Stan_tem
+    for i in range(0, 3):
+        for j in range(0, 3):
+            Stan_tem[i][j] = Stan_tem[i][j]/len(data_tem)
 
-def frange(start, stop, step):
-    opt = start
-    while opt < stop:
-        yield opt
-        opt += step
+    return np.asarray(Stan_tem)
 
-def Approximately(Mass):
-    x = np.asarray([1, 5, 14])
-    y = np.asarray(Mass[1])
+def FunctionCalculationCurves(stans, flag):
+    #with vaccine
+    if flag == 1:
+        loop1 = np.asarray([[0.63, 0, 0],
+                            [0.37, 0.51, 0],
+                            [0, 0.49, 1]])
+        loop2 = np.asarray([[0.48, 0, 0],
+                            [0.52, 0.7, 0],
+                            [0, 0.3, 1]])
+    elif flag == 0:
+    #without vaccine
+        loop1 = np.asarray([[0.69, 0, 0],
+                            [0.31, 0.6, 0],
+                            [0, 0.4, 1]])
+        loop2 = np.asarray([[0.86, 0, 0],
+                            [0.14, 0.57, 0],
+                            [0, 0.43, 1]])
 
-    arr1 = np.polyfit(x, np.sqrt(y), 1)  # y ≈ exp(arr[0]) * exp(arr[1] * x) = const * exp(arr[1] * x)
-    x_range = [i for i in frange(min([1, 5, 14]), max([1, 5, 14]), 1)]
-    fun = [math.sqrt(arr1[1] * i) for i in x_range]
+    # [1, 5, 14]
+    Data = stans.transpose()[0]
 
-    # # Обмежую y зверху одиницею
-    # while fun[len(fun) - 1] < 1:
-    #     x_range.append(max(x_range) + 0.1)
-    #     fun.append(math.exp(arr1[1]) * math.exp(arr1[0] * (max(x_range) + 0.1)))
-    # # якщо y > 1, то видаляю цей елемент
-    # for i in range(len(fun) - 1, 0, -1):
-    #     if fun[i] > 1:
-    #         del fun[i]
-    #         del x_range[i]
-    #     else:
-    #         continue
+    for i in range(2, 5):
+        Data = np.append(Data, np.dot(np.linalg.matrix_power(loop1, i), stans.transpose()[0]))
 
-    return fun, x_range
+    Data = np.append(Data, stans.transpose()[1])
+
+    for j in range(6, 14):
+        Data = np.append(Data, np.dot(np.linalg.matrix_power(loop2, j), stans.transpose()[1]))
+
+    #Data = np.append(Data, stans.transpose()[2])
+
+    Data = Data.reshape(13, 3)
+
+    first_prob = []
+    second_prob = []
+    third_prob = []
+    for i in range(0, 13):
+        first_prob.append(Data[i][0])
+        second_prob.append(Data[i][1])
+        third_prob.append(Data[i][2])
+    return [first_prob, second_prob, third_prob], [i for i in range(0, 13)]
 
 def VisualizationCurve(mass):
     plt.figure(1)
@@ -83,12 +100,11 @@ def buildingcurvesfromprobably():
     Temperature_with_vaccine = data_tem[(data_tem['Противірусний препарат Х'] == 1)]
     Temperature_without_vaccine = data_tem[(data_tem['Противірусний препарат Х'] == 0)]
 
-    # VisualizationCurve(ProbabilityArrayTemperature(data_tem))
-    # VisualizationCurve(ProbabilityArrayTemperature(Temperature_with_vaccine))
-    Matrix = ProbabilityArrayTemperature(Temperature_without_vaccine)
-    # y, x = Approximately(Matrix)
-    # VisualizationCurve([y, x])
-    VisualizationCurve([Matrix[2], [1, 5, 14]])
+
+    Matrix = ArrayTemperature(Temperature_without_vaccine)
+    Y, X = FunctionCalculationCurves(Matrix, 0)
+    for i in range(0, 3):
+        VisualizationCurve([Y[i], X])
     plt.show()
 
 def main():
