@@ -9,12 +9,10 @@ import scipy as sp
 from scipy.interpolate import interp1d
 
 
-def load_data(name_file, age, virus):
+def load_data_age(name_file, age, virus):
     time_bed_days = [] # час, кількість ліжко/днів
     workbook = xlrd.open_workbook(name_file, on_demand=True)
-    print(workbook.sheet_names())
-    page = input('?: ')
-    sheet = workbook.sheet_by_name(page)
+    sheet = workbook.sheet_by_name('Вибірка 1')
     for i in range(sheet.ncols):
         if sheet.cell_value(0, i) == 'Вікова група':
             column_AGE = i # вибірка по віку
@@ -26,9 +24,9 @@ def load_data(name_file, age, virus):
                 col_len -= 1
             for k in range(col_len):
                  # обмежуємо вибірку за параметрами
-                 #if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
-                 if sheet.cell_value(k, column_VIRUS) == virus:
-                     time_bed_days.append(sheet.cell_value(k, i))
+                 if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
+                 # if sheet.cell_value(k, column_VIRUS) == virus:
+                    time_bed_days.append(sheet.cell_value(k, i))
     #del time_bed_days[0]
     #print("Time: ", time_bed_days)
     return time_bed_days
@@ -153,22 +151,30 @@ def New_Survive_fun(Y_Array, X_Array):
     return fun, x_range
 
 
-
-
 def main():
     print('1 - curves, 2 - distribution')
     num = int(input("number: "))
     if num == 1:
+        # вік, температура
+        print('1 - Age curves, 2 - Temperature curves')
+        num = int(input("number: "))
         for i in range(0, 2):
-            age = float(input("age(1-3): "))
-            virus = float(input("virus(0-1): "))
-            time = load_data("Data.xlsx", age, virus)
-            #name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
-            name = 'Противірусний апарат: ' + str(virus)
+            if num == 1:
+                age = float(input("age(1-3): "))
+                virus = float(input("virus(0-1): "))
+                time = load_data_age("Data.xlsx", age, virus)
+                # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
+                name = 'Противірусний апарат: ' + str(virus)
+            elif num == 2:
+                pass
+
+
+
+
             s, karman, h, karman1 = kaplan_mayer(time)
             if s == [0] and karman == [0]:
                 continue
-            name_s = name + ', Area: ' + str(toFixed(sum(s), 3))
+            #name_s = name + ', Area: ' + str(toFixed(sum(s), 3))
 
             f, xr = Approximately_e(karman, h)
 
@@ -187,9 +193,11 @@ def main():
             plt.grid(True)
     elif num == 2:
         for i in range(0, 2):
+            # age = 1,2,3
+            # virus = 0,1
             age = float(input("age(1-3): "))
             virus = float(input("virus(0-1): "))
-            time = load_data("Data.xlsx", age, virus)
+            time = load_data_age("Data.xlsx", age, virus)
             alfa = 0.05  # уровень значимости
             n = np.array(time).size - 1  # число степеней свободы
             t = stats.t(n)
