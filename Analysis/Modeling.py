@@ -1,5 +1,6 @@
 import xlrd
 from itertools import takewhile
+from MarkovChain.BuildingChain import *
 from collections import Counter
 import math
 import numpy as np
@@ -158,39 +159,35 @@ def main():
         # вік, температура
         print('1 - Age curves, 2 - Temperature curves')
         num = int(input("number: "))
-        for i in range(0, 2):
-            if num == 1:
+        if num == 1:
+            for i in range(0, 2):
                 age = float(input("age(1-3): "))
                 virus = float(input("virus(0-1): "))
                 time = load_data_age("Data.xlsx", age, virus)
                 # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
                 name = 'Противірусний апарат: ' + str(virus)
-            elif num == 2:
-                pass
+                s, karman, h, karman1 = kaplan_mayer(time)
+                if s == [0] and karman == [0]:
+                    continue
+                #name_s = name + ', Area: ' + str(toFixed(sum(s), 3))
 
+                f, xr = Approximately_e(karman, h)
 
+                new_s, new_x = New_Survive_fun(s, karman1)
+                nname_s = name + ', Area: ' + str(toFixed(sum(new_s), 3))
+                plt.figure(1)
+                # plt.plot(karman1, s, label=name_s)
+                plt.plot(new_x, new_s, label=nname_s)
+                plt.legend(loc='upper right')
 
-
-            s, karman, h, karman1 = kaplan_mayer(time)
-            if s == [0] and karman == [0]:
-                continue
-            #name_s = name + ', Area: ' + str(toFixed(sum(s), 3))
-
-            f, xr = Approximately_e(karman, h)
-
-            new_s, new_x = New_Survive_fun(s, karman1)
-            nname_s = name + ', Area: ' + str(toFixed(sum(new_s), 3))
-            plt.figure(1)
-            # plt.plot(karman1, s, label=name_s)
-            plt.plot(new_x, new_s, label=nname_s)
-            plt.legend(loc='upper right')
-
-            del new_x[len(new_x) - 1]
-            plt.figure(2)
-            #plt.plot(karman, h, 'o', label=name, markersize=10)
-            plt.plot(xr, f, linewidth=2, label=name)
-            plt.legend(loc='upper left')
-            plt.grid(True)
+                del new_x[len(new_x) - 1]
+                plt.figure(2)
+                #plt.plot(karman, h, 'o', label=name, markersize=10)
+                plt.plot(xr, f, linewidth=2, label=name)
+                plt.legend(loc='upper left')
+                plt.grid(True)
+        elif num == 2:
+            buildingcurvesfromprobably()
     elif num == 2:
         for i in range(0, 2):
             # age = 1,2,3

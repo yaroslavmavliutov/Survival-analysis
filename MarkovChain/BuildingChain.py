@@ -74,22 +74,25 @@ def Approximately(Mass):
 
 def VisualizationCurve(mass):
     plt.figure(1)
-    plt.plot(mass[1], mass[0], label='lol')
+    plt.plot(mass[1], mass[0], label='rate')
     plt.legend(loc='upper left')
     plt.grid(True)
 
-def main():
+def buildingcurvesfromprobably():
     data_tem = pars()
     Temperature_with_vaccine = data_tem[(data_tem['Противірусний препарат Х'] == 1)]
     Temperature_without_vaccine = data_tem[(data_tem['Противірусний препарат Х'] == 0)]
 
-    #VisualizationCurve(ProbabilityArrayTemperature(data_tem))
-    #VisualizationCurve(ProbabilityArrayTemperature(Temperature_with_vaccine))
+    # VisualizationCurve(ProbabilityArrayTemperature(data_tem))
+    # VisualizationCurve(ProbabilityArrayTemperature(Temperature_with_vaccine))
     Matrix = ProbabilityArrayTemperature(Temperature_without_vaccine)
-    y, x = Approximately(Matrix)
-    VisualizationCurve([y, x])
-    VisualizationCurve([Matrix[1], [1,5,14]])
+    # y, x = Approximately(Matrix)
+    # VisualizationCurve([y, x])
+    VisualizationCurve([Matrix[2], [1, 5, 14]])
     plt.show()
+
+def main():
+    buildingcurvesfromprobably()
 
 if __name__ == '__main__':
     main()
