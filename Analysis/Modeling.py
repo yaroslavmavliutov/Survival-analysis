@@ -158,8 +158,7 @@ def main():
     if num == 1:
         # вік, температура
         print('1 - Age curves, 2 - Криві температури, 3 - Характеру мокроти, '
-              '4 - Локалізація НП, 5 - Поширеність процесу, 6 - Рентгенодинаміка,'
-              '7 - Рівень ШОЕ, 8 - Загальний стан')
+              '4 - Локалізація НП, 5 - Рентгенодинаміка')
         num = int(input("number: "))
         if num == 1:
             for i in range(0, 2):
@@ -196,12 +195,6 @@ def main():
             buildingcurvesfromprobably(4)
         elif num == 5:
             buildingcurvesfromprobably(5)
-        elif num == 6:
-            buildingcurvesfromprobably(6)
-        elif num == 7:
-            buildingcurvesfromprobably(7)
-        elif num == 8:
-            buildingcurvesfromprobably(8)
     elif num == 2:
         for i in range(0, 2):
             # age = 1,2,3
