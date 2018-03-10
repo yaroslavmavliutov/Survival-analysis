@@ -158,7 +158,7 @@ def main():
     if num == 1:
         # вік, температура
         print('1 - Age curves, 2 - Криві температури, 3 - Характеру мокроти, '
-              '4 - Локалізація НП, 5 - Рентгенодинаміка')
+              '4 - Локалізація НП, 5 - Рентгенодинаміка, 6 - Загальний стан')
         num = int(input("number: "))
         if num == 1:
             for i in range(0, 2):
@@ -187,14 +187,8 @@ def main():
                 plt.plot(xr, f, linewidth=2, label=name)
                 plt.legend(loc='upper left')
                 plt.grid(True)
-        elif num == 2:
-            buildingcurvesfromprobably(2)
-        elif num == 3:
-            buildingcurvesfromprobably(3)
-        elif num == 4:
-            buildingcurvesfromprobably(4)
-        elif num == 5:
-            buildingcurvesfromprobably(5)
+        elif num in (2, 3,4,5, 6):
+            buildingcurvesfromprobably(num)
     elif num == 2:
         for i in range(0, 2):
             # age = 1,2,3

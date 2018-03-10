@@ -16,16 +16,16 @@ def pars(number):
                         'Температура тіла\nчерез 3-7 діб',
                         'Температура тіла\nчерез 14 діб',
                         'Противірусний препарат Х']
-        Pwithvaccine = [0.31, 0.4, 0.1, 0.28]
-        Pwithoutvaccine = [0.33, 0.49, 1, 0.21]
+        Pwithvaccine = [0.34, 0.49, 1, 0.29]
+        Pwithoutvaccine = [0.31, 0.39, 0.14, 0.38]
     elif number == 3:
         #4x4
         col_list_tem = ['Характер мокроти\nдо лікування',
                         'Характер мокроти\nчерез 3-7 діб',
                         'Характер мокроти\nчерез 14 діб',
                         'Противірусний препарат Х']
-        Pwithvaccine = [0.21, 0.1, 0.08, 0.04]
-        Pwithoutvaccine = [0.36, 0.009, 0.07, 0.11]
+        Pwithvaccine = [1, 0, 1, 0.45]
+        Pwithoutvaccine = [0.34, 0.006, 0.07, 0.11]
 
     elif number == 4:
         #3x3
@@ -44,6 +44,14 @@ def pars(number):
                         'Противірусний препарат Х']
         Pwithvaccine = [0.3, 0.01, 0.99, 0.35]
         Pwithoutvaccine = [0.42, 0.01, 0.99, 0.24]
+    elif number == 6:
+        #3x3
+        col_list_tem = ['Загальний стан хворого\nдо лікування',
+                        'Загальний стан хворого\nчерез 3-7 діб',
+                        'Загальний стан хворого\nчерез 14 діб',
+                        'Противірусний препарат Х']
+        Pwithvaccine = [1, 0.3, 1, 1]
+        Pwithoutvaccine = [1, 0.22, 1, 0.32]
 
     df_tem = df[col_list_tem]
     return df_tem, Pwithvaccine, Pwithoutvaccine
@@ -87,6 +95,7 @@ def FunctionCalculationCurves(stans, massive_unique, p):
         loop2 = np.asarray([[1-p[2], 0, 0],
                             [p[2], 1-p[3], 0],
                             [0, p[3], 1]])
+
     elif len(massive_unique) == 4:
 
         loop1 = np.asarray([[1-p[0], 0, 0, 0],
@@ -119,29 +128,44 @@ def FunctionCalculationCurves(stans, massive_unique, p):
             Stan_tem[index][i] = Data[i][index]
     return Stan_tem, [i for i in range(0, 13)]
 
-def VisualizationCurve(mass):
+def VisualizationCurve(mass, num):
+    #name = 'degree' + str(num)
+    if num == 0:
+        name = 'Важкий'
+    elif num == 1:
+        name = 'Середньої важкості'
+    elif num == 2:
+        name = 'Стабільний'
+    elif num == 3:
+        name = ''
     plt.figure(1)
-    plt.plot(mass[1], mass[0], label='rate')
+    plt.plot(mass[1], mass[0], label=name)
     plt.legend(loc='upper left')
     plt.grid(True)
 
 def buildingcurvesfromprobably(number):
     data_tem, pWITH, pWITHOUT = pars(number)
-    number = int(input("Пацієнти з противірусним - 1, без - 0: "))
+    number = int(input("Пацієнти з противірусним - 0, без - 1: "))
     if number == 0:
         Data = data_tem[(data_tem['Противірусний препарат Х'] == 1)]
         p = pWITH
+        s = 'З противірусним апаратом'
     elif number == 1:
         Data = data_tem[(data_tem['Противірусний препарат Х'] == 0)]
         p = pWITHOUT
+        s = 'Без противірусного апарату'
 
     Vectors, massive_unique = ArrayParameter(Data)
+    print('matrix :', p)
+    print(s)
+    print(massive_unique)
+    print(Vectors)
 
 
     Y, X = FunctionCalculationCurves(Vectors, massive_unique, p)
 
     for i in range(0, massive_unique.size):
-        VisualizationCurve([Y[i], X])
+        VisualizationCurve([Y[i], X], i)
     plt.show()
 
 def main():
