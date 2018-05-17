@@ -131,16 +131,18 @@ def FunctionCalculationCurves(stans, massive_unique, p):
 def VisualizationCurve(mass, num):
     #name = 'degree' + str(num)
     if num == 0:
-        name = 'Важкий'
+        name = 'важкий стан'
     elif num == 1:
-        name = 'Середньої важкості'
+        name = 'стан середньої важкості'
     elif num == 2:
-        name = 'Стабільний'
+        name = 'стабільний стан'
     elif num == 3:
         name = ''
     plt.figure(1)
+    plt.xlabel('Дні госпіталізації')
+    plt.ylabel('Ймовірність певного стану')
     plt.plot(mass[1], mass[0], label=name)
-    plt.legend(loc='upper left')
+    plt.legend(loc='upper right')
     plt.grid(True)
 
 def buildingcurvesfromprobably(number):

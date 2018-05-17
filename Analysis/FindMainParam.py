@@ -21,8 +21,9 @@ def main():
     #summarize the selection of the attributes
     print(rfe.support_)
     print(rfe.ranking_)
-
-    #normalized_X = preprocessing.normalize(X)
+    for i in range(len(dataset.columns.values)):
+        if rfe.ranking_[i] == True:
+            print(' :', dataset.columns.values[i])
 
 
 if __name__ == '__main__':

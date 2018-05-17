@@ -161,61 +161,90 @@ def main():
               '4 - Локалізація НП, 5 - Рентгенодинаміка, 6 - Загальний стан')
         num = int(input("number: "))
         if num == 1:
-            for i in range(0, 2):
-                age = float(input("age(1-3): "))
-                virus = float(input("virus(0-1): "))
-                time = load_data_age("Data.xlsx", age, virus)
-                # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
-                name = 'Противірусний апарат: ' + str(virus)
-                s, karman, h, karman1 = kaplan_mayer(time)
-                if s == [0] and karman == [0]:
-                    continue
-                #name_s = name + ', Area: ' + str(toFixed(sum(s), 3))
+            # age = float(input("age(1-3): "))
+            # virus = float(input("virus(0-1): "))
+            for age in range(1, 4):
+                for virus in range(0, 2):
+                    if age == 1:
+                        print('Вікова група: 18-30 років')
+                        name_a = 'Вікова група: 18-30 років'
+                    elif age == 2:
+                        print('Вікова група: 30-60 років')
+                        name_a = 'Вікова група: 30-60 років'
+                    elif age == 3:
+                        print('Вікова група: >60 років')
+                        name_a = 'Вікова група: >60 років'
+                    if virus == 0:
+                        print('Противірусний препарат відсутній')
+                        name_v = 'Терапія без противірусного препарату'
+                    elif virus == 1:
+                        print('Противірусний препарат наявний')
+                        name_v = 'Терапія з противірусним препаратом'
+                    time = load_data_age("Data.xlsx", age, virus)
+                    # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
+                    #name = 'Противірусний апарат: ' + str(virus)
+                    name = name_a + '. ' + name_v
+                    s, karman, h, karman1 = kaplan_mayer(time)
+                    if s == [0] and karman == [0]:
+                        continue
 
-                f, xr = Approximately_e(karman, h)
+                    f, xr = Approximately_e(karman, h)
 
-                new_s, new_x = New_Survive_fun(s, karman1)
-                nname_s = name + ', Area: ' + str(toFixed(sum(new_s), 3))
-                plt.figure(1)
-                # plt.plot(karman1, s, label=name_s)
-                plt.plot(new_x, new_s, label=nname_s)
-                plt.legend(loc='upper right')
+                    new_s, new_x = New_Survive_fun(s, karman1)
+                    plt.figure(1)
+                    # plt.plot(karman1, s, label=name_s)
+                    plt.title('Криві виживання')
+                    plt.xlabel('Дні госпіталізації')
+                    plt.ylabel('Ймовірність залишитися в стаціонарі')
+                    plt.plot(new_x, new_s, label=name)
+                    plt.legend(loc='upper right')
 
-                del new_x[len(new_x) - 1]
-                plt.figure(2)
-                #plt.plot(karman, h, 'o', label=name, markersize=10)
-                plt.plot(xr, f, linewidth=2, label=name)
-                plt.legend(loc='upper left')
-                plt.grid(True)
-        elif num in (2, 3,4,5, 6):
+                    del new_x[len(new_x) - 1]
+                    plt.figure(2)
+                    plt.title('')
+                    #plt.plot(karman, h, 'o', label=name, markersize=10)
+                    plt.plot(xr, f, linewidth=2, label=name)
+                    plt.legend(loc='upper left')
+                    plt.grid(True)
+        elif num in (2, 3, 4, 5, 6):
             buildingcurvesfromprobably(num)
     elif num == 2:
-        for i in range(0, 2):
-            # age = 1,2,3
-            # virus = 0,1
-            age = float(input("age(1-3): "))
-            virus = float(input("virus(0-1): "))
-            time = load_data_age("Data.xlsx", age, virus)
-            alfa = 0.05  # уровень значимости
-            n = np.array(time).size - 1  # число степеней свободы
-            t = stats.t(n)
-            tcr = t.ppf(1 - alfa / 2)
-            queue_di = tcr * np.std(np.array(time)) / math.sqrt(np.array(time).size)
-            #print("<queue_mean>", np.mean(np.array(time)))
-            #print("<queue_di>", queue_di)
-            print('[ ', np.mean(np.array(time)) - queue_di, ' ; ', np.mean(np.array(time)), ' ; ',
-                  np.mean(np.array(time)) + queue_di, ' ]')
-            #print("left", np.mean(np.array(time)) - queue_di)
-            #print("right>", np.mean(np.array(time)) + queue_di)
+        for age in range(1, 4):
+            for virus in range(0, 2):
+                # age = 1,2,3
+                # virus = 0,1
+                # age = float(input("age(1-3): "))
+                # virus = float(input("virus(0-1): "))
+                time = load_data_age("Data.xlsx", age, virus)
+                alfa = 0.05  # уровень значимости
+                n = np.array(time).size - 1  # число степеней свободы
+                t = stats.t(n)
+                tcr = t.ppf(1 - alfa / 2)
+                queue_di = tcr * np.std(np.array(time)) / math.sqrt(np.array(time).size)
+                #print("<queue_mean>", np.mean(np.array(time)))
+                #print("<queue_di>", queue_di)
+                if age == 1:
+                    print('Вікова група: 18-30 років')
+                elif age == 2:
+                    print('Вікова група: 30-60 років')
+                elif age == 3:
+                    print('Вікова група: >60 років')
+                if virus == 0:
+                    print('Противірусний препарат відсутній')
+                elif virus == 1:
+                    print('Противірусний препарат наявний')
+                print('[ ', np.mean(np.array(time)) - queue_di, ' ; ', np.mean(np.array(time)), ' ; ',
+                      np.mean(np.array(time)) + queue_di, ' ]')
+                #print("left", np.mean(np.array(time)) - queue_di)
+                #print("right>", np.mean(np.array(time)) + queue_di)
 
-            #Інший спосіб підрахунку довірчого (те саме)
-            # confidence=0.95
-            # a = 1.0 * np.array(time)
-            # n = len(a)
-            # m, se = np.mean(a), stats.sem(a)
-            # h = se * sp.stats.t._ppf((1 + confidence) / 2., n - 1)
-            # print(m,' e ', m - h,' f ', m + h)
-
+                #Інший спосіб підрахунку довірчого (те саме)
+                # confidence=0.95
+                # a = 1.0 * np.array(time)
+                # n = len(a)
+                # m, se = np.mean(a), stats.sem(a)
+                # h = se * sp.stats.t._ppf((1 + confidence) / 2., n - 1)
+                # print(m,' e ', m - h,' f ', m + h)
     plt.show()
 
 
