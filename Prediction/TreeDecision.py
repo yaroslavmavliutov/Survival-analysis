@@ -22,8 +22,10 @@ def main():
     clf_gini = clf_gini.fit(X_train, y_train)
 
     # ПРОГНОЗУЮ
-
-    print('gini ', clf_gini.predict([[1, 2, 1, 1, 2, 5, 8, 10]]))
+    # ['Вікова група', 'Температура тіла\nдо лікування', 'Характер мокроти\nдо лікування',
+    #  'Загальний стан хворого\nдо лікування',
+    #  'Локалізація НП\nдо лікування', 'Рентгенодинаміка\nдо лікування']
+    print('gini ', clf_gini.predict([[2, 1, 1, 1, 1, 3]]))
 
     y_pred = clf_gini.predict(X_test)
     print("Accuracy is ", accuracy_score(y_test, y_pred) * 100)
