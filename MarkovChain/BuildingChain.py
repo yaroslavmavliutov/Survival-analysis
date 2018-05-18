@@ -54,7 +54,7 @@ def pars(number):
         Pwithoutvaccine = [1, 0.22, 1, 0.32]
 
     df_tem = df[col_list_tem]
-    return df_tem, Pwithvaccine, Pwithoutvaccine
+    return df_tem, Pwithvaccine, Pwithoutvaccine, number
 
 
 def ArrayParameter(data_tem):
@@ -128,46 +128,56 @@ def FunctionCalculationCurves(stans, massive_unique, p):
             Stan_tem[index][i] = Data[i][index]
     return Stan_tem, [i for i in range(0, 13)]
 
-def VisualizationCurve(mass, num):
+def VisualizationCurve(mass, num, count, number):
     #name = 'degree' + str(num)
-    if num == 0:
-        name = 'важкий стан'
-    elif num == 1:
-        name = 'стан середньої важкості'
-    elif num == 2:
-        name = 'стабільний стан'
-    elif num == 3:
-        name = ''
-    plt.figure(1)
-    plt.xlabel('Дні госпіталізації')
-    plt.ylabel('Ймовірність певного стану')
-    plt.plot(mass[1], mass[0], label=name)
-    plt.legend(loc='upper right')
-    plt.grid(True)
+    stan = [['>38°C', '37-38°C', '<37°C'],
+            ['слизово-гнійне мокротіння', 'слизове мокротіння', 'мокротіння нема'],
+            ['сегментна локалізація', 'часткова локалізація', 'локалізація відсутня'],
+            ['без динаміки', 'часткове розсмоктування', 'повне розсмоктування'],
+            ['важкий стан', 'стан середньої важкості', 'стабільний стан']]
+    name = stan[count-2][num]
+    if number == 0:
+        plt.figure(1)
+        plt.title('Криві виживання із врахуванням ПП')
+        plt.xlabel('Дні госпіталізації')
+        plt.ylabel('Ймовірність стану')
+        plt.plot(mass[1], mass[0], label=name)
+        plt.legend(loc='upper right')
+        plt.grid(True)
+    elif number == 1:
+        plt.figure(2)
+        plt.title('Криві виживання без врахуванням ПП')
+        plt.xlabel('Дні госпіталізації')
+        plt.ylabel('Ймовірність стану')
+        plt.plot(mass[1], mass[0], label=name)
+        plt.legend(loc='upper right')
+        plt.grid(True)
 
 def buildingcurvesfromprobably(number):
-    data_tem, pWITH, pWITHOUT = pars(number)
-    number = int(input("Пацієнти з противірусним - 0, без - 1: "))
-    if number == 0:
-        Data = data_tem[(data_tem['Противірусний препарат Х'] == 1)]
-        p = pWITH
-        s = 'З противірусним апаратом'
-    elif number == 1:
-        Data = data_tem[(data_tem['Противірусний препарат Х'] == 0)]
-        p = pWITHOUT
-        s = 'Без противірусного апарату'
+    data_tem, pWITH, pWITHOUT, count = pars(number)
+    #number = int(input("Пацієнти з противірусним - 0, без - 1: "))
+    for number in range(0, 2):
+        if number == 0:
+            Data = data_tem[(data_tem['Противірусний препарат Х'] == 1)]
+            p = pWITH
+            s = 'З противірусним апаратом'
+        elif number == 1:
+            Data = data_tem[(data_tem['Противірусний препарат Х'] == 0)]
+            p = pWITHOUT
+            s = 'Без противірусного апарату'
 
-    Vectors, massive_unique = ArrayParameter(Data)
-    print('matrix :', p)
-    print(s)
-    print(massive_unique)
-    print(Vectors)
+        Vectors, massive_unique = ArrayParameter(Data)
+        print('matrix :', p)
+        print(s)
+        print(massive_unique)
+        print(Vectors)
 
 
-    Y, X = FunctionCalculationCurves(Vectors, massive_unique, p)
+        Y, X = FunctionCalculationCurves(Vectors, massive_unique, p)
 
-    for i in range(0, massive_unique.size):
-        VisualizationCurve([Y[i], X], i)
+        for i in range(0, massive_unique.size):
+            VisualizationCurve([Y[i], X], i, count, number)
+
     plt.show()
 
 def main():

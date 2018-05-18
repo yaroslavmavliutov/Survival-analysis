@@ -10,8 +10,6 @@ def main():
     del dataset['Вірусний агент']
     X = dataset.as_matrix()
 
-    # ДЕРЕВО
-
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
     clf_gini = DecisionTreeClassifier(criterion="gini",
@@ -25,8 +23,6 @@ def main():
 
     export_graphviz(clf_gini.tree_, out_file='tree.dot', feature_names=['x[0]', 'x[1]', 'x[2]', 'x[3]', 'x[4]', 'x[5]', 'x[6]', 'x[7]'])
     call(['dot', '-T', 'png', 'tree.dot', '-o', 'tree.png'])
-
-
 
 
 if __name__ == '__main__':
