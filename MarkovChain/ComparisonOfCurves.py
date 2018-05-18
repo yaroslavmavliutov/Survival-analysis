@@ -22,19 +22,18 @@ def VisualizationCurve(mass, num, count, number):
 
 
 def comparisonbuildingcurves(number):
-    data_tem, pWITH, pWITHOUT, count = pars(number)
+    data_tem, count = pars(number)
 
     #[[without], [with]]
     Data = []
     Data.append(data_tem[(data_tem['Противірусний препарат Х'] == 0)])
     Data.append(data_tem[(data_tem['Противірусний препарат Х'] == 1)])
 
-    p = [pWITHOUT, pWITH]
     for index, data in enumerate(Data):
         Vectors, massive_unique = ArrayParameter(data)
         try: Vectors.transpose()[0] = first_stan
         except: pass
-        Y, X = FunctionCalculationCurves(Vectors, massive_unique, p[index])
+        Y, X = FunctionCalculationCurves(Vectors, massive_unique)
         for i in range(0, massive_unique.size):
             VisualizationCurve([Y[i], X], i, count, index)
         first_stan = Vectors.transpose()[0]

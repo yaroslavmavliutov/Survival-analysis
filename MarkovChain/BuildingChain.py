@@ -1,10 +1,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import stats
-import math
-
-from scipy.optimize import fsolve
+import wolframalpha as wf
+import re
 
 def pars(number):
 
@@ -16,16 +14,12 @@ def pars(number):
                         'Температура тіла\nчерез 3-7 діб',
                         'Температура тіла\nчерез 14 діб',
                         'Противірусний препарат Х']
-        Pwithvaccine = [0.34, 0.49, 1, 0.29]
-        Pwithoutvaccine = [0.31, 0.39, 0.14, 0.38]
     elif number == 3:
         #4x4
         col_list_tem = ['Характер мокроти\nдо лікування',
                         'Характер мокроти\nчерез 3-7 діб',
                         'Характер мокроти\nчерез 14 діб',
                         'Противірусний препарат Х']
-        Pwithvaccine = [1, 0, 1, 0.45]
-        Pwithoutvaccine = [0.34, 0.006, 0.07, 0.11]
 
     elif number == 4:
         #3x3
@@ -33,8 +27,7 @@ def pars(number):
                         'Локалізація НП\nчерез 3-7 діб',
                         'Локалізація НП\nчерез 14 діб',
                         'Противірусний препарат Х']
-        Pwithvaccine = [0.01, 0.01, 0.99, 0.42]
-        Pwithoutvaccine = [0.01, 0.01, 0.12, 0.24]
+
 
     elif number == 5:
         #3x3
@@ -42,19 +35,16 @@ def pars(number):
                         'Рентгенодинаміка\nчерез 3-7 діб',
                         'Рентгенодинаміка\nчерез 14 діб',
                         'Противірусний препарат Х']
-        Pwithvaccine = [0.3, 0.01, 0.99, 0.35]
-        Pwithoutvaccine = [0.42, 0.01, 0.99, 0.24]
+
     elif number == 6:
         #3x3
         col_list_tem = ['Загальний стан хворого\nдо лікування',
                         'Загальний стан хворого\nчерез 3-7 діб',
                         'Загальний стан хворого\nчерез 14 діб',
                         'Противірусний препарат Х']
-        Pwithvaccine = [1, 0.3, 1, 1]
-        Pwithoutvaccine = [1, 0.22, 1, 0.32]
 
     df_tem = df[col_list_tem]
-    return df_tem, Pwithvaccine, Pwithoutvaccine, number
+    return df_tem, number
 
 
 def ArrayParameter(data_tem):
@@ -85,27 +75,39 @@ def ArrayParameter(data_tem):
 
     return np.asarray(Stan_tem[::-1]), massive_unique
 
+def FindTransitionMatrix_P(stan):
 
-def FunctionCalculationCurves(stans, massive_unique, p):
+    client = wf.Client("YLJ24P-8TRXGTQA9H")  # app_ID is the app id
+
+    first_loop = "({{1-x, 0, 0}, {x, 1-y, 0}, {0, y, 1}}^5)*{{" + str(stan.transpose()[0][0]) + "}, {" + str(stan.transpose()[0][1]) + \
+    "}, {" + str(stan.transpose()[0][2]) + "}}= {{" + str(stan.transpose()[1][0]) +"}, {"+ str(stan.transpose()[1][1]) + "}, {" + str(stan.transpose()[1][2]) + \
+    "}}"
+    res_first = client.query(first_loop)
+    answer_first = next(res_first.results).text
+    ans1 = re.findall(r'\d+[.]\d+|\d+', answer_first)
+
+    sec_loop = "({{1-x, 0, 0}, {x, 1-y, 0}, {0, y, 1}}^5)*{{" + str(stan.transpose()[1][0]) + "}, {" + str(
+        stan.transpose()[1][1]) + \
+                 "}, {" + str(stan.transpose()[1][2]) + "}}= {{" + str(stan.transpose()[2][0]) + "}, {" + str(
+        stan.transpose()[2][1]) + "}, {" + str(stan.transpose()[2][2]) + \
+                 "}}"
+    res_sec = client.query(sec_loop)
+    answer_sec = next(res_sec.results).text
+    ans2 = re.findall(r'\d+[.]\d+|\d+', answer_sec)
+    return [[float(ans1[0]), float(ans1[1])], [float(ans2[0]), float(ans2[1])]]
+
+def FunctionCalculationCurves(stans, massive_unique):
+
+    p = FindTransitionMatrix_P(stans)
+
     if len(massive_unique) == 3:
 
-        loop1 = np.asarray([[1-p[0], 0, 0],
-                            [p[0], 1-p[1], 0],
-                            [0, p[1], 1]])
-        loop2 = np.asarray([[1-p[2], 0, 0],
-                            [p[2], 1-p[3], 0],
-                            [0, p[3], 1]])
-
-    elif len(massive_unique) == 4:
-
-        loop1 = np.asarray([[1-p[0], 0, 0, 0],
-                            [p[0], 1-p[1], 0, 0],
-                            [0, p[1], 1-p[2], 0],
-                            [0, 0, p[2], 1]])
-        loop2 = np.asarray([[1-p[3], 0, 0, 0],
-                            [p[3], 1-p[4], 0, 0],
-                            [0, p[4], 1-p[5], 0],
-                            [0, 0, p[5], 1]])
+        loop1 = np.asarray([[1-p[0][0], 0, 0],
+                            [p[0][0], 1-p[0][1], 0],
+                            [0, p[0][1], 1]])
+        loop2 = np.asarray([[1-p[1][0], 0, 0],
+                            [p[1][0], 1-p[1][1], 0],
+                            [0, p[1][1], 1]])
 
     # [1, 5, 14]
     Data = stans.transpose()[0]
@@ -153,27 +155,25 @@ def VisualizationCurve(mass, num, count, number):
         plt.legend(loc='upper right')
         plt.grid(True)
 
+
 def buildingcurvesfromprobably(number):
-    data_tem, pWITH, pWITHOUT, count = pars(number)
+    data_tem, count = pars(number)
     #number = int(input("Пацієнти з противірусним - 0, без - 1: "))
     for number in range(0, 2):
         if number == 0:
             Data = data_tem[(data_tem['Противірусний препарат Х'] == 1)]
-            p = pWITH
             s = 'З противірусним апаратом'
         elif number == 1:
             Data = data_tem[(data_tem['Противірусний препарат Х'] == 0)]
-            p = pWITHOUT
             s = 'Без противірусного апарату'
 
         Vectors, massive_unique = ArrayParameter(Data)
-        print('matrix :', p)
         print(s)
         print(massive_unique)
         print(Vectors)
 
 
-        Y, X = FunctionCalculationCurves(Vectors, massive_unique, p)
+        Y, X = FunctionCalculationCurves(Vectors, massive_unique)
 
         for i in range(0, massive_unique.size):
             VisualizationCurve([Y[i], X], i, count, number)
@@ -181,6 +181,7 @@ def buildingcurvesfromprobably(number):
     plt.show()
 
 def main():
+
     buildingcurvesfromprobably()
 
 if __name__ == '__main__':
