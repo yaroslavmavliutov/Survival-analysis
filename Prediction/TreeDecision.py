@@ -1,7 +1,7 @@
 from Parsing.ParsingData import *
-from sklearn.metrics import *
 from sklearn.tree import *
-from sklearn.cross_validation import train_test_split
+import matplotlib.pyplot as plt
+import numpy as np
 
 def main():
     dataset = pars()
@@ -9,28 +9,23 @@ def main():
     del dataset['Вірусний агент']
     X = dataset.as_matrix()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
-
-    # Decision Tree Classifier with criterion gini index
-    clf_gini = DecisionTreeClassifier(criterion="gini",
-                                       min_samples_leaf=1,
-                                       max_depth=None,
-                                       max_features=None, max_leaf_nodes=None,
-                                       min_impurity_split=1e-07,
-                                       min_samples_split=2, min_weight_fraction_leaf=0.0,
-                                       presort=False, random_state=None, splitter='best')
-    clf_gini = clf_gini.fit(X_train, y_train)
+    clf = DecisionTreeClassifier()
+    clf = clf.fit(X, y)
 
     # ПРОГНОЗУЮ
     # ['Вікова група', 'Температура тіла\nдо лікування', 'Характер мокроти\nдо лікування',
     #  'Загальний стан хворого\nдо лікування',
     #  'Локалізація НП\nдо лікування', 'Рентгенодинаміка\nдо лікування']
-    print('gini ', clf_gini.predict([[2, 1, 1, 1, 1, 3]]))
 
-    y_pred = clf_gini.predict(X_test)
-    print("Accuracy is ", accuracy_score(y_test, y_pred) * 100)
+    p = clf.predict_proba([[2, 1, 1, 1, 1, 3]])[0]
 
-
+    x = p.tolist()
+    plt.bar(np.arange(len(x)), height=x)
+    plt.xticks(np.arange(len(x)), ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'))
+    plt.ylabel('Ймовірність')
+    plt.xlabel('Вірусний агент')
+    plt.title('Прогнозування вірусного агента')
+    plt.show()
 
 if __name__ == '__main__':
     main()
