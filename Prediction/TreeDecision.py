@@ -3,7 +3,7 @@ from sklearn.tree import *
 import matplotlib.pyplot as plt
 import numpy as np
 
-def main():
+def predict():
     dataset = pars()
     y = (dataset['Вірусний агент']).as_matrix()
     del dataset['Вірусний агент']
@@ -24,7 +24,6 @@ def main():
     lokal = input('Локалізація(0: нема, 1: однобічна, 2: двобічна): ')
     rentgen = input('Рентгенодинаміка(1: повне розсмоктування, 2: часткове, 3: без динаміки, 4: від\'ємна динаміка): ')
 
-
     p = clf.predict_proba([[age, temp, mokrora, zagaln, lokal, rentgen]])[0]
 
     x = p.tolist()
@@ -34,6 +33,9 @@ def main():
     plt.xlabel('Вірусний агент')
     plt.title('Прогнозування вірусного агента')
     plt.show()
+
+def main():
+    predict()
 
 if __name__ == '__main__':
     main()

@@ -1,13 +1,13 @@
 import xlrd
 from itertools import takewhile
 from MarkovChain.BuildingChain import *
+from MarkovChain.ComparisonOfCurves import comparisonbuildingcurves
 from collections import Counter
 import math
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-import scipy as sp
-from scipy.interpolate import interp1d
+from Prediction.TreeDecision import predict
 
 
 def load_data_age(name_file, age, virus):
@@ -153,12 +153,14 @@ def New_Survive_fun(Y_Array, X_Array):
 
 
 def main():
-    print('1 - curves, 2 - distribution')
+    print('1 - Побудова кривих, 2 - Розподіл, 3 - Отримати прогноз вірусного агента')
     num = int(input("number: "))
     if num == 1:
         # вік, температура
-        print('1 - Age curves, 2 - Криві температури, 3 - Характеру мокроти, '
-              '4 - Локалізація НП, 5 - Рентгенодинаміка, 6 - Загальний стан')
+        print('1 - Загальне одужання в залежності від віку, 2 - Динаміка температури, 3 - Динаміка характеру мокроти, ')
+        print('4 - Динаміка локалізації НП, 5 - Динаміка рентгенодинаміки, 6 - Динаміка загального стану')
+        print('7 - Порівняти криві температури, 8 - Порівняти криві характеру мокроти, 9 - Порівняти криві локалізації НП,')
+        print('10 - Порівняти криві рентгенодинаміки, 11 - Порівняти криві загального стану')
         num = int(input("number: "))
         if num == 1:
             # age = float(input("age(1-3): "))
@@ -207,7 +209,11 @@ def main():
                     plt.legend(loc='upper left')
                     plt.grid(True)
         elif num in (2, 3, 4, 5, 6):
-            buildingcurvesfromprobably(num)
+            try: buildingcurvesfromprobably(num)
+            except: pass
+        elif num in (7, 8, 9, 10, 11):
+            try: comparisonbuildingcurves(num-5)
+            except: pass
     elif num == 2:
         for age in range(1, 4):
             for virus in range(0, 2):
@@ -245,6 +251,8 @@ def main():
                 # m, se = np.mean(a), stats.sem(a)
                 # h = se * sp.stats.t._ppf((1 + confidence) / 2., n - 1)
                 # print(m,' e ', m - h,' f ', m + h)
+    elif num == 3:
+        predict()
     plt.show()
 
 
