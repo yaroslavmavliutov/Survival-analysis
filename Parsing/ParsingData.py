@@ -2,7 +2,7 @@ import pandas as pd
 
 def pars():
 
-    xls_file = pd.ExcelFile('/home/yaroslav/Projects/Python/Medical_models/Survival-analysis/Data.xlsx')
+    xls_file = pd.ExcelFile('/home/yaroslav/Projects/Python/Medical_models/Survival-analysis/Data2.xlsx')
     df = xls_file.parse('Вибірка 1')
     # value = int(input("вік "))
     # print(df.head())

@@ -6,7 +6,7 @@ import re
 
 def pars(number):
 
-    xls_file = pd.ExcelFile('/home/yaroslav/Projects/Python/Medical_models/Survival-analysis/Data.xlsx')
+    xls_file = pd.ExcelFile('/home/yaroslav/Projects/Python/Medical_models/Survival-analysis/Data2.xlsx')
     df = xls_file.parse('Вибірка 1')
     if number == 2:
         #3x3
@@ -86,13 +86,22 @@ def FindTransitionMatrix_P(stan):
     answer_first = next(res_first.results).text
     ans1 = re.findall(r'\d+[.]\d+|\d+', answer_first)
 
-    sec_loop = "({{1-x, 0, 0}, {x, 1-y, 0}, {0, y, 1}}^5)*{{" + str(stan.transpose()[1][0]) + "}, {" + str(
+    sec_loop = "({{1-x, 0, 0}, {x, 1-y, 0}, {0, y, 1}}^2)*{{" + str(stan.transpose()[1][0]) + "}, {" + str(
         stan.transpose()[1][1]) + \
                  "}, {" + str(stan.transpose()[1][2]) + "}}= {{" + str(stan.transpose()[2][0]) + "}, {" + str(
         stan.transpose()[2][1]) + "}, {" + str(stan.transpose()[2][2]) + \
                  "}}"
     res_sec = client.query(sec_loop)
-    answer_sec = next(res_sec.results).text
+    try:
+        answer_sec = next(res_sec.results).text
+    except:
+        sec_loop = "({{1-x, 0, 0}, {x, 1-y, 0}, {0, y, 1}})*{{" + str(stan.transpose()[1][0]) + "}, {" + str(
+            stan.transpose()[1][1]) + \
+                   "}, {" + str(stan.transpose()[1][2]) + "}}= {{" + str(stan.transpose()[2][0]) + "}, {" + str(
+            stan.transpose()[2][1]) + "}, {" + str(stan.transpose()[2][2]) + \
+                   "}}"
+        res_sec = client.query(sec_loop)
+        answer_sec = next(res_sec.results).text
     ans2 = re.findall(r'\d+[.]\d+|\d+', answer_sec)
     return [[float(ans1[0]), float(ans1[1])], [float(ans2[0]), float(ans2[1])]]
 

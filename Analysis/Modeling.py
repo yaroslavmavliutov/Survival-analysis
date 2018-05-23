@@ -25,8 +25,8 @@ def load_data_age(name_file, age, virus):
                 col_len -= 1
             for k in range(col_len):
                  # обмежуємо вибірку за параметрами
-                 if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
-                 # if sheet.cell_value(k, column_VIRUS) == virus:
+                if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
+                #if sheet.cell_value(k, column_VIRUS) == virus:
                     time_bed_days.append(sheet.cell_value(k, i))
     #del time_bed_days[0]
     #print("Time: ", time_bed_days)
@@ -176,13 +176,14 @@ def main():
                     elif age == 3:
                         print('Вікова група: >60 років')
                         name_a = 'Вікова група: >60 років'
+                    #name_a = ''
                     if virus == 0:
                         print('Противірусний препарат відсутній')
                         name_v = 'Терапія без противірусного препарату'
                     elif virus == 1:
                         print('Противірусний препарат наявний')
                         name_v = 'Терапія з противірусним препаратом'
-                    time = load_data_age("Data.xlsx", age, virus)
+                    time = load_data_age("Data2.xlsx", age, virus)
                     # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
                     #name = 'Противірусний апарат: ' + str(virus)
                     name = name_a + '. ' + name_v
@@ -209,8 +210,9 @@ def main():
                     plt.legend(loc='upper left')
                     plt.grid(True)
         elif num in (2, 3, 4, 5, 6):
-            try: buildingcurvesfromprobably(num)
-            except: pass
+            # try: buildingcurvesfromprobably(num)
+            # except: pass
+            buildingcurvesfromprobably(num)
         elif num in (7, 8, 9, 10, 11):
             try: comparisonbuildingcurves(num-5)
             except: pass
@@ -221,7 +223,7 @@ def main():
                 # virus = 0,1
                 # age = float(input("age(1-3): "))
                 # virus = float(input("virus(0-1): "))
-                time = load_data_age("Data.xlsx", age, virus)
+                time = load_data_age("Data2.xlsx", age, virus)
                 alfa = 0.05  # уровень значимости
                 n = np.array(time).size - 1  # число степеней свободы
                 t = stats.t(n)
