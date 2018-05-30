@@ -28,7 +28,7 @@ def predict():
 
     x = p.tolist()
     plt.bar(np.arange(len(x)), height=x)
-    plt.xticks(np.arange(len(x)), ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'))
+    plt.xticks(np.arange(len(x)), ('Нема', 'Метапнев', 'Парагрип', 'Рино', 'Адено', 'Корона'))
     plt.ylabel('Ймовірність')
     plt.xlabel('Вірусний агент')
     plt.title('Прогнозування вірусного агента')

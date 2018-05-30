@@ -157,12 +157,71 @@ def main():
     num = int(input("number: "))
     if num == 1:
         # вік, температура
+        print('0 - Загальне одужання')
         print('1 - Загальне одужання в залежності від віку, 2 - Динаміка температури, 3 - Динаміка характеру мокроти, ')
         print('4 - Динаміка локалізації НП, 5 - Динаміка рентгенодинаміки, 6 - Динаміка загального стану')
         print('7 - Порівняти криві температури, 8 - Порівняти криві характеру мокроти, 9 - Порівняти криві локалізації НП,')
         print('10 - Порівняти криві рентгенодинаміки, 11 - Порівняти криві загального стану')
         num = int(input("number: "))
-        if num == 1:
+        if num == 0:
+            for virus in range(0, 2):
+                # name_a = ''
+                if virus == 0:
+                    print('Противірусний препарат відсутній')
+                    name_v = 'Терапія 1'
+                elif virus == 1:
+                    print('Противірусний препарат наявний')
+                    name_v = 'Терапія 2'
+                age = 9
+                time = load_data_age("Data.xlsx", age, virus)
+                # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
+                # name = 'Противірусний апарат: ' + str(virus)
+                name = name_v
+                s, karman, h, karman1 = kaplan_mayer(time)
+                if s == [0] and karman == [0]:
+                    continue
+
+                f, xr = Approximately_e(karman, h)
+
+                new_s, new_x = New_Survive_fun(s, karman1)
+                plt.figure(1)
+                if virus == 0:
+                    save_s = new_s
+                # plt.plot(karman1, s, label=name_s)
+                plt.title('Криві одужання')
+                plt.xlabel('Дні госпіталізації')
+                plt.ylabel('Ймовірність залишитися в стаціонарі')
+                plt.plot(new_x, new_s, label=name)
+                plt.legend(loc='upper right')
+
+                del new_x[len(new_x) - 1]
+                plt.figure(2)
+                plt.title('')
+                # plt.plot(karman, h, 'o', label=name, markersize=10)
+                plt.plot(xr, f, linewidth=2, label=name)
+                plt.legend(loc='upper left')
+                plt.grid(True)
+                if virus == 1:
+                    sum1 = 0
+                    sum2 = 0
+                    for i in range(1, len(new_s)):
+                        di0 = (new_s[i-1] - new_s[i])*10
+                        di1 = (save_s[i - 1] - save_s[i])*10
+
+                        ti0 = (new_s[i-1])*10
+                        ti1 = (save_s[i-1])*10
+
+                        ni0 = (new_s[i])*10
+                        ni1 = (save_s[i])*10
+
+                        sum1 = sum1 + (di0 - ti0*(di0+di1)/(ti0+ti1))
+                        sum2 = (ti1*ti0*(di0+di1)*(ni0+ni1))/((ti0+ti1)*(ti0+ti1)*((ti0+ti1)))
+                    print(sum1*sum1)
+                    #print(sum2)
+
+
+
+        elif num == 1:
             # age = float(input("age(1-3): "))
             # virus = float(input("virus(0-1): "))
             for age in range(1, 4):
@@ -183,7 +242,7 @@ def main():
                     elif virus == 1:
                         print('Противірусний препарат наявний')
                         name_v = 'Терапія з противірусним препаратом'
-                    time = load_data_age("Data2.xlsx", age, virus)
+                    time = load_data_age("Data.xlsx", age, virus)
                     # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
                     #name = 'Противірусний апарат: ' + str(virus)
                     name = name_a + '. ' + name_v
@@ -196,7 +255,7 @@ def main():
                     new_s, new_x = New_Survive_fun(s, karman1)
                     plt.figure(1)
                     # plt.plot(karman1, s, label=name_s)
-                    plt.title('Криві виживання')
+                    plt.title('Криві одужання')
                     plt.xlabel('Дні госпіталізації')
                     plt.ylabel('Ймовірність залишитися в стаціонарі')
                     plt.plot(new_x, new_s, label=name)
@@ -223,7 +282,7 @@ def main():
                 # virus = 0,1
                 # age = float(input("age(1-3): "))
                 # virus = float(input("virus(0-1): "))
-                time = load_data_age("Data2.xlsx", age, virus)
+                time = load_data_age("Data.xlsx", age, virus)
                 alfa = 0.05  # уровень значимости
                 n = np.array(time).size - 1  # число степеней свободы
                 t = stats.t(n)

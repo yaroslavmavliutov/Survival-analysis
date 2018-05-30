@@ -6,7 +6,7 @@ import re
 
 def pars(number):
 
-    xls_file = pd.ExcelFile('/home/yaroslav/Projects/Python/Medical_models/Survival-analysis/Data2.xlsx')
+    xls_file = pd.ExcelFile('/home/yaroslav/Projects/Python/Medical_models/Survival-analysis/Data.xlsx')
     df = xls_file.parse('Вибірка 1')
     if number == 2:
         #3x3
@@ -149,7 +149,7 @@ def VisualizationCurve(mass, num, count, number):
     name = stan[count-2][num]
     if number == 0:
         plt.figure(1)
-        plt.title('Криві виживання із врахуванням ПП')
+        plt.title('Динаміка температури')
         plt.xlabel('Дні госпіталізації')
         plt.ylabel('Ймовірність стану')
         plt.plot(mass[1], mass[0], label=name)

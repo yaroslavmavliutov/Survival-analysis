@@ -2,7 +2,7 @@ import pandas as pd
 
 def pars():
 
-    xls_file = pd.ExcelFile('/home/yaroslav/Projects/Python/Medical_models/Survival-analysis/Data2.xlsx')
+    xls_file = pd.ExcelFile('/home/yaroslav/Projects/Python/Medical_models/Survival-analysis/Analysis/Data.xlsx')
     df = xls_file.parse('Вибірка 1')
     # value = int(input("вік "))
     # print(df.head())
@@ -11,5 +11,8 @@ def pars():
                 'Локалізація НП\nдо лікування', 'Рентгенодинаміка\nдо лікування',
                 'Вірусний агент']
     df = df[col_list]
+
+    df = df[df['Вікова група'] == 1]
+
     return df
 

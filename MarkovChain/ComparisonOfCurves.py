@@ -9,11 +9,11 @@ def VisualizationCurve(mass, num, count, number):
             ['без динаміки', 'часткове розсмоктування', 'повне розсмоктування'],
             ['важкий стан', 'стан середньої важкості', 'стабільний стан']]
     if number == 0:
-        name = stan[count - 2][num] + '. Без противірусного препарату'
+        name = stan[count - 2][num] + '. 1 терапія'
     elif number == 1:
-        name = stan[count - 2][num] + '. З противірусним препаратом'
+        name = stan[count - 2][num] + '. 2 терапія'
     plt.figure(num)
-    plt.title('Криві виживання')
+    plt.title('Динаміка')
     plt.xlabel('Дні госпіталізації')
     plt.ylabel('Ймовірність стану')
     plt.plot(mass[1], mass[0], label=name)
