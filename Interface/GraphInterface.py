@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter import *
 import pandas as pd
+from Analysis import Modeling
+from Prediction import TreeDecision
 
 
 LARGE_FONT = ("clearlyu", 12)
@@ -120,10 +122,13 @@ class PageOne(tk.Frame):
         button3 = tk.Button(self, text="Завантажити дані 2 терапії", font="clearlyu",
                             command=self.onOpen2)
         button3.pack()
+        message_button = tk.Button(self, text="Промоделювати", font="clearlyu",
+                                   command=self.show_message)
+        message_button.pack(padx=14, pady=5, anchor="n")
 
         button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
-        button1.pack(pady=30, padx=30)
+        button1.pack(pady=50, padx=50)
 
     def onOpen1(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
@@ -152,6 +157,9 @@ class PageOne(tk.Frame):
         df = f.parse('Вибірка 1')
         return df
 
+    def show_message(self):
+        Modeling.main(1, 0)
+
 class PageTwo(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -160,8 +168,8 @@ class PageTwo(tk.Frame):
 
         L1 = Label(self, text="Вік", font="clearlyu")
         L1.pack(padx=3, pady=0)
-        message = StringVar()
-        message_entry = Entry(self, textvariable=message, bd=1)
+        message1 = StringVar()
+        message_entry = Entry(self, textvariable=message1, bd=1)
         message_entry.pack(padx=7, pady=0)
 
         L1 = Label(self, text="Початкова температура тіла (36-42)", font="clearlyu")
@@ -207,15 +215,15 @@ class PageTwo(tk.Frame):
         w.pack(padx=7, pady=0)
 
         message_button = tk.Button(self, text="Промоделювати", font="clearlyu",
-                                   command=self.show_message(message.get()))
+                                   command=self.show_message)
         message_button.pack(padx=14, pady=5, anchor="n")
 
         button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
         button1.pack(pady=2, padx=2)
 
-    def show_message(self, message):
-        print(message)
+    def show_message(self):
+        Modeling.main(1, 1)
 
 class PageFour(tk.Frame):
     def __init__(self, parent, controller):
@@ -280,15 +288,15 @@ class PageFour(tk.Frame):
         w.config(font="clearlyu")
         w.pack(padx=7, pady=0)
 
-        message_button = tk.Button(self, text="Промоделювати", font="clearlyu", command=self.show_message(message.get()))
+        message_button = tk.Button(self, text="Промоделювати", font="clearlyu", command=self.show_message)
         message_button.pack(padx=14, pady=5, anchor="n")
 
         button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
         button1.pack(pady=2, padx=2)
 
-    def show_message(self, message):
-        print(message)
+    def show_message(self):
+        Modeling.main(1, 2)
 
 class PageFive(tk.Frame):
     def __init__(self, parent, controller):
@@ -313,9 +321,13 @@ class PageFive(tk.Frame):
                             command=self.onOpen2)
         button3.pack()
 
+        message_button = tk.Button(self, text="Промоделювати", font="clearlyu",
+                                   command=self.show_message)
+        message_button.pack(padx=14, pady=5, anchor="n")
+
         button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
-        button1.pack(pady=30, padx=30)
+        button1.pack(pady=50, padx=50)
 
     def onOpen1(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
@@ -343,6 +355,9 @@ class PageFive(tk.Frame):
         f = pd.ExcelFile(filename)
         df = f.parse('Вибірка 1')
         return df
+
+    def show_message(self):
+        Modeling.main(1, 11)
 
 class PageSix(tk.Frame):
     def __init__(self, parent, controller):
@@ -398,15 +413,15 @@ class PageSix(tk.Frame):
         w.config(font="clearlyu")
         w.pack(padx=7, pady=0)
 
-        message_button = tk.Button(self, text="Прогноз", font="clearlyu", command=self.show_message(message.get()))
+        message_button = tk.Button(self, text="Прогноз", font="clearlyu", command=self.show_message)
         message_button.pack(padx=14, pady=5, anchor="n")
 
         button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
         button1.pack(pady=2, padx=2)
 
-    def show_message(self, message):
-        print(message)
+    def show_message(self):
+        TreeDecision.predict()
 
 
 app = SeaofBTCapp()

@@ -10,7 +10,7 @@ from scipy import stats
 from Prediction.TreeDecision import predict
 
 
-def load_data_age(name_file, age, virus):
+def load_data_age(name_file, age, virus, num):
     time_bed_days = [] # час, кількість ліжко/днів
     workbook = xlrd.open_workbook(name_file, on_demand=True)
     sheet = workbook.sheet_by_name('Вибірка 1')
@@ -25,9 +25,13 @@ def load_data_age(name_file, age, virus):
                 col_len -= 1
             for k in range(col_len):
                  # обмежуємо вибірку за параметрами
-                if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
-                #if sheet.cell_value(k, column_VIRUS) == virus:
-                    time_bed_days.append(sheet.cell_value(k, i))
+                if num == 1:
+                    if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
+                        time_bed_days.append(sheet.cell_value(k, i))
+                elif num == 0:
+                    if sheet.cell_value(k, column_VIRUS) == virus:
+
+                        time_bed_days.append(sheet.cell_value(k, i))
     #del time_bed_days[0]
     #print("Time: ", time_bed_days)
     return time_bed_days
@@ -152,28 +156,28 @@ def New_Survive_fun(Y_Array, X_Array):
     return fun, x_range
 
 
-def main():
-    print('1 - Побудова кривих, 2 - Розподіл, 3 - Отримати прогноз вірусного агента')
-    num = int(input("number: "))
-    if num == 1:
+def main(num1, num):
+    #print('1 - Побудова кривих, 2 - Розподіл, 3 - Отримати прогноз вірусного агента')
+    #num = int(input("number: "))
+    if num1 == 1:
         # вік, температура
-        print('0 - Загальне одужання')
-        print('1 - Загальне одужання в залежності від віку, 2 - Динаміка температури, 3 - Динаміка характеру мокроти, ')
-        print('4 - Динаміка локалізації НП, 5 - Динаміка рентгенодинаміки, 6 - Динаміка загального стану')
-        print('7 - Порівняти криві температури, 8 - Порівняти криві характеру мокроти, 9 - Порівняти криві локалізації НП,')
-        print('10 - Порівняти криві рентгенодинаміки, 11 - Порівняти криві загального стану')
-        num = int(input("number: "))
+        # print('0 - Загальне одужання')
+        # print('1 - Загальне одужання в залежності від віку, 2 - Динаміка температури, 3 - Динаміка характеру мокроти, ')
+        # print('4 - Динаміка локалізації НП, 5 - Динаміка рентгенодинаміки, 6 - Динаміка загального стану')
+        # print('7 - Порівняти криві температури, 8 - Порівняти криві характеру мокроти, 9 - Порівняти криві локалізації НП,')
+        # print('10 - Порівняти криві рентгенодинаміки, 11 - Порівняти криві загального стану')
+        #num = int(input("number: "))
         if num == 0:
             for virus in range(0, 2):
                 # name_a = ''
                 if virus == 0:
-                    print('Противірусний препарат відсутній')
+                    # print('Противірусний препарат відсутній')
                     name_v = 'Терапія 1'
                 elif virus == 1:
-                    print('Противірусний препарат наявний')
+                    # print('Противірусний препарат наявний')
                     name_v = 'Терапія 2'
                 age = 9
-                time = load_data_age("Data.xlsx", age, virus)
+                time = load_data_age("Data.xlsx", age, virus, num)
                 # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
                 # name = 'Противірусний апарат: ' + str(virus)
                 name = name_v
@@ -195,11 +199,11 @@ def main():
                 plt.legend(loc='upper right')
 
                 del new_x[len(new_x) - 1]
-                plt.figure(2)
-                plt.title('')
+                #plt.figure(2)
+                #plt.title('')
                 # plt.plot(karman, h, 'o', label=name, markersize=10)
-                plt.plot(xr, f, linewidth=2, label=name)
-                plt.legend(loc='upper left')
+                #plt.plot(xr, f, linewidth=2, label=name)
+                #plt.legend(loc='upper left')
                 plt.grid(True)
                 if virus == 1:
                     sum1 = 0
@@ -224,25 +228,27 @@ def main():
         elif num == 1:
             # age = float(input("age(1-3): "))
             # virus = float(input("virus(0-1): "))
-            for age in range(1, 4):
-                for virus in range(0, 2):
+            age = 2
+            virus = 1
+            for age in range(age, age + 1):
+                for virus in range(virus, virus + 1):
                     if age == 1:
-                        print('Вікова група: 18-30 років')
+                        # print('Вікова група: 18-30 років')
                         name_a = 'Вікова група: 18-30 років'
                     elif age == 2:
-                        print('Вікова група: 30-60 років')
+                        # print('Вікова група: 30-60 років')
                         name_a = 'Вікова група: 30-60 років'
                     elif age == 3:
-                        print('Вікова група: >60 років')
+                        # print('Вікова група: >60 років')
                         name_a = 'Вікова група: >60 років'
                     #name_a = ''
                     if virus == 0:
-                        print('Противірусний препарат відсутній')
+                        # print('Противірусний препарат відсутній')
                         name_v = 'Терапія без противірусного препарату'
                     elif virus == 1:
-                        print('Противірусний препарат наявний')
+                        # print('Противірусний препарат наявний')
                         name_v = 'Терапія з противірусним препаратом'
-                    time = load_data_age("Data.xlsx", age, virus)
+                    time = load_data_age("Data.xlsx", age, virus, num)
                     # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
                     #name = 'Противірусний апарат: ' + str(virus)
                     name = name_a + '. ' + name_v
@@ -262,11 +268,11 @@ def main():
                     plt.legend(loc='upper right')
 
                     del new_x[len(new_x) - 1]
-                    plt.figure(2)
-                    plt.title('')
+                    #plt.figure(2)
+                    #plt.title('')
                     #plt.plot(karman, h, 'o', label=name, markersize=10)
-                    plt.plot(xr, f, linewidth=2, label=name)
-                    plt.legend(loc='upper left')
+                    #plt.plot(xr, f, linewidth=2, label=name)
+                    #plt.legend(loc='upper left')
                     plt.grid(True)
         elif num in (2, 3, 4, 5, 6):
             # try: buildingcurvesfromprobably(num)
@@ -275,7 +281,7 @@ def main():
         elif num in (7, 8, 9, 10, 11):
             try: comparisonbuildingcurves(num-5)
             except: pass
-    elif num == 2:
+    elif num1 == 2:
         for age in range(1, 4):
             for virus in range(0, 2):
                 # age = 1,2,3
@@ -312,7 +318,7 @@ def main():
                 # m, se = np.mean(a), stats.sem(a)
                 # h = se * sp.stats.t._ppf((1 + confidence) / 2., n - 1)
                 # print(m,' e ', m - h,' f ', m + h)
-    elif num == 3:
+    elif num1 == 3:
         predict()
     plt.show()
 
