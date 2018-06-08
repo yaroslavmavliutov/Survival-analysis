@@ -134,23 +134,21 @@ class PageOne(tk.Frame):
     def onOpen1(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
         dlg = fd.Open(self, filetypes=ftypes)
-        self.fl = dlg.show()
+        self.fl1 = dlg.show()
 
-        if self.fl != '':
-            text = self.readFile(self.fl)
-            print(text)
-            label = tk.Label(self, text="Завантажено 1 файл "+str(self.fl.split("/")[-1]), font=LARGE_FONT)
+        if self.fl1 != '':
+            text = self.readFile(self.fl1)
+            label = tk.Label(self, text="Завантажено 1 файл "+str(self.fl1.split("/")[-1]), font=LARGE_FONT)
             label.pack(pady=0, padx=0)
 
     def onOpen2(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
         dlg = fd.Open(self, filetypes=ftypes)
-        self.fl = dlg.show()
+        self.fl2 = dlg.show()
 
-        if self.fl != '':
-            text = self.readFile(self.fl)
-            print(text)
-            label = tk.Label(self, text="Завантажено 2 файл "+str(self.fl.split("/")[-1]), font=LARGE_FONT)
+        if self.fl2 != '':
+            text = self.readFile(self.fl2)
+            label = tk.Label(self, text="Завантажено 2 файл "+str(self.fl2.split("/")[-1]), font=LARGE_FONT)
             label.pack(pady=0, padx=0)
 
     def readFile(self, filename):
@@ -159,7 +157,7 @@ class PageOne(tk.Frame):
         return df
 
     def show_message(self):
-        Modeling.main(1, 0)
+        Modeling.main(1, 0, [self.fl1, self.fl2])
 
 class PageTwo(tk.Frame):
     def __init__(self, parent, controller):
@@ -224,7 +222,8 @@ class PageTwo(tk.Frame):
 
     def show_message(self):
         print(self.variable3.get())
-        Modeling.main(1, 1)
+        Modeling.main(1, 1, [self.message_entry1.get(), self.message_entry2.get(), self.variable3.get(), self.variable4.get(),
+                             self.variable5.get(), self.variable6.get()])
 
 class PageFour(tk.Frame):
     def __init__(self, parent, controller):
@@ -297,7 +296,9 @@ class PageFour(tk.Frame):
         button2.pack(pady=2, padx=2)
 
     def show_message(self):
-        Modeling.main(1, 2)
+        Modeling.main(1, self.variable0,
+                      [self.message_entry1.get(), self.message_entry2.get(), self.variable3.get(), self.variable4.get(),
+                       self.variable5.get(), self.variable6.get()])
 
 class PageFive(tk.Frame):
     def __init__(self, parent, controller):
@@ -333,23 +334,23 @@ class PageFive(tk.Frame):
     def onOpen1(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
         dlg = fd.Open(self, filetypes=ftypes)
-        self.fl = dlg.show()
+        self.fl1 = dlg.show()
 
-        if self.fl != '':
-            text = self.readFile(self.fl)
+        if self.fl1 != '':
+            text = self.readFile(self.fl1)
             print(text)
-            label = tk.Label(self, text="1 load " + str(self.fl.split("/")[-1]), font=LARGE_FONT)
+            label = tk.Label(self, text="1 load " + str(self.fl1.split("/")[-1]), font=LARGE_FONT)
             label.pack(pady=0, padx=0)
 
     def onOpen2(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
         dlg = fd.Open(self, filetypes=ftypes)
-        self.fl = dlg.show()
+        self.fl2 = dlg.show()
 
-        if self.fl != '':
-            text = self.readFile(self.fl)
+        if self.fl2 != '':
+            text = self.readFile(self.fl2)
             print(text)
-            label = tk.Label(self, text="2 load " + str(self.fl.split("/")[-1]), font=LARGE_FONT)
+            label = tk.Label(self, text="2 load " + str(self.fl2.split("/")[-1]), font=LARGE_FONT)
             label.pack(pady=0, padx=0)
 
     def readFile(self, filename):
@@ -358,7 +359,7 @@ class PageFive(tk.Frame):
         return df
 
     def show_message(self):
-        Modeling.main(1, 11)
+        Modeling.main(1, [self.variable1, self.fl1, self.fl2])
 
 class PageSix(tk.Frame):
     def __init__(self, parent, controller):
@@ -422,7 +423,8 @@ class PageSix(tk.Frame):
         button2.pack(pady=2, padx=2)
 
     def show_message(self):
-        TreeDecision.predict()
+        TreeDecision.predict([self.message_entry1.get(), self.message_entry2.get(), self.variable3.get(), self.variable4.get(),
+                             self.variable5.get(), self.variable6.get()])
 
 
 app = SeaofBTCapp()

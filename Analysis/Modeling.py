@@ -10,7 +10,7 @@ from scipy import stats
 from Prediction.TreeDecision import predict
 
 
-def load_data_age(name_file, age, virus, num):
+def load_data_age(name_file, age, virus, temp, mokrota, rentgeno, lokaliz, zagaln, num):
     time_bed_days = [] # час, кількість ліжко/днів
     workbook = xlrd.open_workbook(name_file, on_demand=True)
     sheet = workbook.sheet_by_name('Вибірка 1')
@@ -19,6 +19,18 @@ def load_data_age(name_file, age, virus, num):
             column_AGE = i # вибірка по віку
         if sheet.cell_value(0, i) == 'Противірусний препарат Х':
             column_VIRUS = i # вибірка по прийманню препаратів
+
+        if sheet.cell_value(0, i) == 'Температура тіла\nдо лікування':
+            column_temp = i # вибірка по прийманню препаратів
+        if sheet.cell_value(0, i) == 'Характер мокроти\nдо лікування':
+            column_mokrota = i # вибірка по прийманню препаратів
+        if sheet.cell_value(0, i) == 'Рентгенодинаміка\nдо лікування':
+            column_rentgeno = i # вибірка по прийманню препаратів
+        if sheet.cell_value(0, i) == 'Локалізація НП\nдо лікування':
+            column_lokaliz = i # вибірка по прийманню препаратів
+        if sheet.cell_value(0, i) == 'Загальний стан хворого\nдо лікування':
+            column_zagaln = i # вибірка по прийманню препаратів
+
         if sheet.cell_value(0, i) == 'Кількість ліжко/днів':
             col_len = len(sheet.col_values(i)) # кількість рядків в стовпчику
             for _ in takewhile(lambda x: not x, reversed(sheet.col_values(i))):
@@ -26,7 +38,9 @@ def load_data_age(name_file, age, virus, num):
             for k in range(col_len):
                  # обмежуємо вибірку за параметрами
                 if num == 1:
-                    if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_VIRUS) == virus:
+                    if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_temp) == temp and sheet.cell_value(k, column_mokrota) == mokrota \
+                            and sheet.cell_value(k, column_rentgeno) == rentgeno and sheet.cell_value(k, column_lokaliz) == lokaliz \
+                            and sheet.cell_value(k, column_zagaln) == zagaln:
                         time_bed_days.append(sheet.cell_value(k, i))
                 elif num == 0:
                     if sheet.cell_value(k, column_VIRUS) == virus:
@@ -156,7 +170,7 @@ def New_Survive_fun(Y_Array, X_Array):
     return fun, x_range
 
 
-def main(num1, num):
+def main(num1, num, data):
     #print('1 - Побудова кривих, 2 - Розподіл, 3 - Отримати прогноз вірусного агента')
     #num = int(input("number: "))
     if num1 == 1:
@@ -169,15 +183,17 @@ def main(num1, num):
         #num = int(input("number: "))
         if num == 0:
             for virus in range(0, 2):
+                #namefile = "Data.xlsx"
                 # name_a = ''
+                age = 100
                 if virus == 0:
                     # print('Противірусний препарат відсутній')
                     name_v = 'Терапія 1'
+                    time = load_data_age(data[0], age, virus, 0, 0, 0, 0, 0, num)
                 elif virus == 1:
                     # print('Противірусний препарат наявний')
                     name_v = 'Терапія 2'
-                age = 9
-                time = load_data_age("Data.xlsx", age, virus, num)
+                    time = load_data_age(data[1], age, virus, 0, 0, 0, 0, 0, num)
                 # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
                 # name = 'Противірусний апарат: ' + str(virus)
                 name = name_v
@@ -220,60 +236,37 @@ def main(num1, num):
 
                         sum1 = sum1 + (di0 - ti0*(di0+di1)/(ti0+ti1))
                         sum2 = (ti1*ti0*(di0+di1)*(ni0+ni1))/((ti0+ti1)*(ti0+ti1)*((ti0+ti1)))
-                    print(sum1*sum1)
+                    #print(sum1*sum1)
                     #print(sum2)
-
-
 
         elif num == 1:
             # age = float(input("age(1-3): "))
             # virus = float(input("virus(0-1): "))
+            namefile = "Data.xlsx"
             age = 2
-            virus = 1
-            for age in range(age, age + 1):
-                for virus in range(virus, virus + 1):
-                    if age == 1:
-                        # print('Вікова група: 18-30 років')
-                        name_a = 'Вікова група: 18-30 років'
-                    elif age == 2:
-                        # print('Вікова група: 30-60 років')
-                        name_a = 'Вікова група: 30-60 років'
-                    elif age == 3:
-                        # print('Вікова група: >60 років')
-                        name_a = 'Вікова група: >60 років'
-                    #name_a = ''
-                    if virus == 0:
-                        # print('Противірусний препарат відсутній')
-                        name_v = 'Терапія без противірусного препарату'
-                    elif virus == 1:
-                        # print('Противірусний препарат наявний')
-                        name_v = 'Терапія з противірусним препаратом'
-                    time = load_data_age("Data.xlsx", age, virus, num)
-                    # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
-                    #name = 'Противірусний апарат: ' + str(virus)
-                    name = name_a + '. ' + name_v
-                    s, karman, h, karman1 = kaplan_mayer(time)
-                    if s == [0] and karman == [0]:
-                        continue
+            virus = 0
+            print(data)
 
-                    f, xr = Approximately_e(karman, h)
+            time = load_data_age(namefile, int(data[0]), virus, data[1], data[2], data[4], data[3], data[5], num)
+            # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
+            #name = 'Противірусний апарат: ' + str(virus)
+            #name = name_a + '. ' + name_v
+            name = 'Крива одужання'
+            s, karman, h, karman1 = kaplan_mayer(time)
+            if s == [0] and karman == [0]:
+                pass
 
-                    new_s, new_x = New_Survive_fun(s, karman1)
-                    plt.figure(1)
-                    # plt.plot(karman1, s, label=name_s)
-                    plt.title('Криві одужання')
-                    plt.xlabel('Дні госпіталізації')
-                    plt.ylabel('Ймовірність залишитися в стаціонарі')
-                    plt.plot(new_x, new_s, label=name)
-                    plt.legend(loc='upper right')
+            new_s, new_x = New_Survive_fun(s, karman1)
+            plt.figure(1)
+            # plt.plot(karman1, s, label=name_s)
+            plt.title('Криві одужання')
+            plt.xlabel('Дні госпіталізації')
+            plt.ylabel('Ймовірність залишитися в стаціонарі')
+            plt.plot(new_x, new_s, label=name)
+            plt.legend(loc='upper right')
 
-                    del new_x[len(new_x) - 1]
-                    #plt.figure(2)
-                    #plt.title('')
-                    #plt.plot(karman, h, 'o', label=name, markersize=10)
-                    #plt.plot(xr, f, linewidth=2, label=name)
-                    #plt.legend(loc='upper left')
-                    plt.grid(True)
+            del new_x[len(new_x) - 1]
+            plt.grid(True)
         elif num in (2, 3, 4, 5, 6):
             # try: buildingcurvesfromprobably(num)
             # except: pass
@@ -281,7 +274,7 @@ def main(num1, num):
         elif num in (7, 8, 9, 10, 11):
             try: comparisonbuildingcurves(num-5)
             except: pass
-    elif num1 == 3:
+    elif num1 == 2:
         predict()
     plt.show()
 
