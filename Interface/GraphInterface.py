@@ -4,6 +4,7 @@ from tkinter import *
 import pandas as pd
 from Analysis import Modeling
 from Prediction import TreeDecision
+from functools import partial
 
 
 LARGE_FONT = ("clearlyu", 12)
@@ -88,68 +89,68 @@ class StartPage(tk.Frame):
 class PageAbout(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="ПРО ПРОГРАМУ", font=LARGE_FONT)
-        label.pack(pady=15, padx=15)
+        label1 = tk.Label(self, text="ПРО ПРОГРАМУ", font=LARGE_FONT)
+        label1.pack(pady=15, padx=15)
 
-        label = tk.Label(self, text="Програма призначена для вибору \n оптимальної терапії", font="clearlyu")
-        label.pack(pady=10, padx=10)
-        label = tk.Label(self, text="Порівняння противірусних препаратів", font="clearlyu")
-        label.pack(pady=5, padx=5)
-        label = tk.Label(self, text="Моделювання перебігу захворювання", font="clearlyu")
-        label.pack(pady=5, padx=5)
+        label2 = tk.Label(self, text="Програма призначена для вибору \n оптимальної терапії", font="clearlyu")
+        label2.pack(pady=10, padx=10)
+        label3 = tk.Label(self, text="Порівняння противірусних препаратів", font="clearlyu")
+        label3.pack(pady=5, padx=5)
+        label4 = tk.Label(self, text="Моделювання перебігу захворювання", font="clearlyu")
+        label4.pack(pady=5, padx=5)
 
-        label = tk.Label(self, text="Прогнозування вірусного агента", font="clearlyu")
-        label.pack(pady=5, padx=5)
-        label = tk.Label(self, text="Отримання рекомендацій", font="clearlyu")
-        label.pack(pady=5, padx=5)
+        label5 = tk.Label(self, text="Прогнозування вірусного агента", font="clearlyu")
+        label5.pack(pady=5, padx=5)
+        label6 = tk.Label(self, text="Отримання рекомендацій", font="clearlyu")
+        label6.pack(pady=5, padx=5)
         button1 = tk.Button(self, text="Повернутись на головну сторінку",
                             command=lambda: controller.show_frame(StartPage), font="clearlyu")
         button1.pack(pady=30, padx=30)
 
-        label = tk.Label(self, text="(с) Мавлютов Я.С.", font="clearlyu")
-        label.pack(pady=30, padx=30)
+        label7 = tk.Label(self, text="(с) Мавлютов Я.С.", font="clearlyu")
+        label7.pack(pady=30, padx=30)
 
 class PageOne(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="ПОРІВНЯННЯ 2 ТЕРАПІЙ", font=LARGE_FONT)
-        label.pack(pady=15, padx=15)
+        label1 = tk.Label(self, text="ПОРІВНЯННЯ 2 ТЕРАПІЙ", font=LARGE_FONT)
+        label1.pack(pady=15, padx=15)
 
-        button3 = tk.Button(self, text="Завантажити дані 1 терапії", font="clearlyu",
+        button1 = tk.Button(self, text="Завантажити дані 1 терапії", font="clearlyu",
                             command=self.onOpen1)
-        button3.pack()
+        button1.pack()
 
-        button3 = tk.Button(self, text="Завантажити дані 2 терапії", font="clearlyu",
+        button2 = tk.Button(self, text="Завантажити дані 2 терапії", font="clearlyu",
                             command=self.onOpen2)
-        button3.pack()
+        button2.pack()
         message_button = tk.Button(self, text="Промоделювати", font="clearlyu",
                                    command=self.show_message)
         message_button.pack(padx=14, pady=5, anchor="n")
 
-        button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
+        button3 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
-        button1.pack(pady=50, padx=50)
+        button3.pack(pady=50, padx=50)
 
     def onOpen1(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
         dlg = fd.Open(self, filetypes=ftypes)
-        fl = dlg.show()
+        self.fl = dlg.show()
 
-        if fl != '':
-            text = self.readFile(fl)
+        if self.fl != '':
+            text = self.readFile(self.fl)
             print(text)
-            label = tk.Label(self, text="Завантажено 1 файл "+str(fl.split("/")[-1]), font=LARGE_FONT)
+            label = tk.Label(self, text="Завантажено 1 файл "+str(self.fl.split("/")[-1]), font=LARGE_FONT)
             label.pack(pady=0, padx=0)
 
     def onOpen2(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
         dlg = fd.Open(self, filetypes=ftypes)
-        fl = dlg.show()
+        self.fl = dlg.show()
 
-        if fl != '':
-            text = self.readFile(fl)
+        if self.fl != '':
+            text = self.readFile(self.fl)
             print(text)
-            label = tk.Label(self, text="Завантажено 2 файл "+str(fl.split("/")[-1]), font=LARGE_FONT)
+            label = tk.Label(self, text="Завантажено 2 файл "+str(self.fl.split("/")[-1]), font=LARGE_FONT)
             label.pack(pady=0, padx=0)
 
     def readFile(self, filename):
@@ -163,137 +164,137 @@ class PageOne(tk.Frame):
 class PageTwo(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="МОДЕЛЮВАННЯ ШВИДКОСТІ ОДУЖАННЯ", font=LARGE_FONT)
-        label.pack(pady=15, padx=15)
+        label1 = tk.Label(self, text="МОДЕЛЮВАННЯ ШВИДКОСТІ ОДУЖАННЯ", font=LARGE_FONT)
+        label1.pack(pady=15, padx=15)
 
         L1 = Label(self, text="Вік", font="clearlyu")
         L1.pack(padx=3, pady=0)
         message1 = StringVar()
-        message_entry = Entry(self, textvariable=message1, bd=1)
-        message_entry.pack(padx=7, pady=0)
+        self.message_entry1 = Entry(self, textvariable=message1, bd=1)
+        self.message_entry1.pack(padx=7, pady=0)
 
-        L1 = Label(self, text="Початкова температура тіла (36-42)", font="clearlyu")
-        L1.pack(padx=3, pady=0)
-        message = StringVar()
-        message_entry = Entry(self, textvariable=message, bd=1)
-        message_entry.pack(padx=7, pady=0)
-
-        L2 = Label(self, text="Початковий характер мокротіння", font="clearlyu")
+        L2 = Label(self, text="Початкова температура тіла (36-42)", font="clearlyu")
         L2.pack(padx=3, pady=0)
-        choices = ['Нема', 'Слизове', 'Слизово-гнійне', 'Гнійне']
-        variable = StringVar(self)
-        variable.set('Нема')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        message2 = StringVar()
+        self.message_entry2 = Entry(self, textvariable=message2, bd=1)
+        self.message_entry2.pack(padx=7, pady=0)
 
-        L2 = Label(self, text="Початкова локалізація", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Нема', 'Однобічна', 'Двобічна']
-        variable = StringVar(self)
-        variable.set('Нема')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        L3 = Label(self, text="Початковий характер мокротіння", font="clearlyu")
+        L3.pack(padx=3, pady=0)
+        choices3 = ['Відсутнє', 'Слизове', 'Слизово-гнійне', 'Гнійне']
+        self.variable3 = StringVar(self)
+        self.variable3.set('Відсутнє')
+        w3 = OptionMenu(self, self.variable3, *choices3)
+        w3.config(font="clearlyu")
+        w3.pack(padx=7, pady=0)
 
-        L2 = Label(self, text="Початкова рентгенодинаміка", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Повне розсмоктування', 'Часткове розсмоктування', 'Динаміка відсутня', 'Відм\'ємна динаміка']
-        variable = StringVar(self)
-        variable.set('Повне розсмоктування')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font=("clearlyu", 12))
-        w.pack(padx=7, pady=0)
+        L4 = Label(self, text="Початкова локалізація", font="clearlyu")
+        L4.pack(padx=3, pady=0)
+        choices4 = ['Відсутня', 'Однобічна', 'Двобічна']
+        self.variable4 = StringVar(self)
+        self.variable4.set('Відсутня')
+        w4 = OptionMenu(self, self.variable4, *choices4)
+        w4.config(font="clearlyu")
+        w4.pack(padx=7, pady=0)
 
-        L2 = Label(self, text="Початковий загальний стан", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Стабільний', 'Середньої важкості', 'Важкий']
-        variable = StringVar(self)
-        variable.set('Стабільний')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        L5 = Label(self, text="Початкова рентгенодинаміка", font="clearlyu")
+        L5.pack(padx=3, pady=0)
+        choices5 = ['Повне розсмоктування', 'Часткове розсмоктування', 'Динаміка відсутня', 'Відм\'ємна динаміка']
+        self.variable5 = StringVar(self)
+        self.variable5.set('Повне розсмоктування')
+        w5 = OptionMenu(self, self.variable5, *choices5)
+        w5.config(font=("clearlyu", 12))
+        w5.pack(padx=7, pady=0)
 
-        message_button = tk.Button(self, text="Промоделювати", font="clearlyu",
-                                   command=self.show_message)
-        message_button.pack(padx=14, pady=5, anchor="n")
+        L6 = Label(self, text="Початковий загальний стан", font="clearlyu")
+        L6.pack(padx=3, pady=0)
+        choices6 = ['Стабільний', 'Середньої важкості', 'Важкий']
+        self.variable6 = StringVar(self)
+        self.variable6.set('Стабільний')
+        w6 = OptionMenu(self, self.variable6, *choices6)
+        w6.config(font="clearlyu")
+        w6.pack(padx=7, pady=0)
 
-        button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
+        button1 = tk.Button(self, text="Промоделювати", font="clearlyu", command=self.show_message)
+        button1.pack(padx=14, pady=5, anchor="n")
+
+        button2 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
-        button1.pack(pady=2, padx=2)
+        button2.pack(pady=2, padx=2)
 
     def show_message(self):
+        print(self.variable3.get())
         Modeling.main(1, 1)
 
 class PageFour(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="МОДЕЛЮВАННЯ ДИНАМІКИ КЛІНІЧНОГО ПАРАМЕТРУ", font=LARGE_FONT)
-        label.pack(pady=15, padx=15)
+        label1 = tk.Label(self, text="МОДЕЛЮВАННЯ ДИНАМІКИ КЛІНІЧНОГО ПАРАМЕТРУ", font=LARGE_FONT)
+        label1.pack(pady=15, padx=15)
 
-        L2 = Label(self, text="Клінічний параметр", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Температура тіла', 'Характер мокротіння', 'Локалізація', 'Рентгенодинаміка', 'Загальний стан']
-        variable = StringVar(self)
-        variable.set('Температура тіла')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        L0 = Label(self, text="Клінічний параметр", font="clearlyu")
+        L0.pack(padx=3, pady=0)
+        choices0 = ['Температура тіла', 'Характер мокротіння', 'Локалізація', 'Рентгенодинаміка', 'Загальний стан']
+        self.variable0 = StringVar(self)
+        self.variable0.set('Температура тіла')
+        w0 = OptionMenu(self, self.variable0, *choices0)
+        w0.config(font="clearlyu")
+        w0.pack(padx=7, pady=0)
 
         L1 = Label(self, text="Вік", font="clearlyu")
         L1.pack(padx=3, pady=0)
-        message = StringVar()
-        message_entry = Entry(self, textvariable=message, bd=1)
-        message_entry.pack(padx=7, pady=0)
+        message1 = StringVar()
+        self.message_entry1 = Entry(self, textvariable=message1, bd=1)
+        self.message_entry1.pack(padx=7, pady=0)
 
-        L1 = Label(self, text="Початкова температура тіла (36-42)", font="clearlyu")
-        L1.pack(padx=3, pady=0)
-        message = StringVar()
-        message_entry = Entry(self, textvariable=message, bd=1)
-        message_entry.pack(padx=7, pady=0)
-
-        L2 = Label(self, text="Початковий характер мокротіння", font="clearlyu")
+        L2 = Label(self, text="Початкова температура тіла (36-42)", font="clearlyu")
         L2.pack(padx=3, pady=0)
-        choices = ['Нема', 'Слизове', 'Слизово-гнійне', 'Гнійне']
-        variable = StringVar(self)
-        variable.set('Нема')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        message2 = StringVar()
+        self.message_entry2 = Entry(self, textvariable=message2, bd=1)
+        self.message_entry2.pack(padx=7, pady=0)
 
-        L2 = Label(self, text="Початкова локалізація", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Нема', 'Однобічна', 'Двобічна']
-        variable = StringVar(self)
-        variable.set('Нема')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        L3 = Label(self, text="Початковий характер мокротіння", font="clearlyu")
+        L3.pack(padx=3, pady=0)
+        choices3 = ['Відсутнє', 'Слизове', 'Слизово-гнійне', 'Гнійне']
+        self.variable3 = StringVar(self)
+        self.variable3.set('Відсутнє')
+        w3 = OptionMenu(self, self.variable3, *choices3)
+        w3.config(font="clearlyu")
+        w3.pack(padx=7, pady=0)
 
-        L2 = Label(self, text="Початкова рентгенодинаміка", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Повне розсмоктування', 'Часткове розсмоктування', 'Динаміка відсутня', 'Відм\'ємна динаміка']
-        variable = StringVar(self)
-        variable.set('Повне розсмоктування')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font=("clearlyu", 12))
-        w.pack(padx=7, pady=0)
+        L4 = Label(self, text="Початкова локалізація", font="clearlyu")
+        L4.pack(padx=3, pady=0)
+        choices4 = ['Відсутня', 'Однобічна', 'Двобічна']
+        self.variable4 = StringVar(self)
+        self.variable4.set('Відсутня')
+        w4 = OptionMenu(self, self.variable4, *choices4)
+        w4.config(font="clearlyu")
+        w4.pack(padx=7, pady=0)
 
-        L2 = Label(self, text="Початковий загальний стан", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Стабільний', 'Середньої важкості', 'Важкий']
-        variable = StringVar(self)
-        variable.set('Стабільний')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        L5 = Label(self, text="Початкова рентгенодинаміка", font="clearlyu")
+        L5.pack(padx=3, pady=0)
+        choices5 = ['Повне розсмоктування', 'Часткове розсмоктування', 'Динаміка відсутня', 'Відм\'ємна динаміка']
+        self.variable5 = StringVar(self)
+        self.variable5.set('Повне розсмоктування')
+        w5 = OptionMenu(self, self.variable5, *choices5)
+        w5.config(font=("clearlyu", 12))
+        w5.pack(padx=7, pady=0)
 
-        message_button = tk.Button(self, text="Промоделювати", font="clearlyu", command=self.show_message)
-        message_button.pack(padx=14, pady=5, anchor="n")
+        L6 = Label(self, text="Початковий загальний стан", font="clearlyu")
+        L6.pack(padx=3, pady=0)
+        choices6 = ['Стабільний', 'Середньої важкості', 'Важкий']
+        self.variable6 = StringVar(self)
+        self.variable6.set('Стабільний')
+        w6 = OptionMenu(self, self.variable6, *choices6)
+        w6.config(font="clearlyu")
+        w6.pack(padx=7, pady=0)
 
-        button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
+        button1 = tk.Button(self, text="Промоделювати", font="clearlyu", command=self.show_message)
+        button1.pack(padx=14, pady=5, anchor="n")
+
+        button2 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
-        button1.pack(pady=2, padx=2)
+        button2.pack(pady=2, padx=2)
 
     def show_message(self):
         Modeling.main(1, 2)
@@ -301,54 +302,54 @@ class PageFour(tk.Frame):
 class PageFive(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="ПОРІВНЯННЯ ДИНАМІКИ ПАРАМЕТРІВ 2 ТЕРАПІЙ", font=LARGE_FONT)
-        label.pack(pady=15, padx=15)
+        label1 = tk.Label(self, text="ПОРІВНЯННЯ ДИНАМІКИ ПАРАМЕТРІВ 2 ТЕРАПІЙ", font=LARGE_FONT)
+        label1.pack(pady=15, padx=15)
 
-        L2 = Label(self, text="Клінічний параметр", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Температура тіла', 'Характер мокротіння', 'Локалізація', 'Рентгенодинаміка', 'Загальний стан']
-        variable = StringVar(self)
-        variable.set('Температура тіла')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=10)
+        L1 = Label(self, text="Клінічний параметр", font="clearlyu")
+        L1.pack(padx=3, pady=0)
+        choices1 = ['Температура тіла', 'Характер мокротіння', 'Локалізація', 'Рентгенодинаміка', 'Загальний стан']
+        self.variable1 = StringVar(self)
+        self.variable1.set('Температура тіла')
+        w1 = OptionMenu(self, self.variable1, *choices1)
+        w1.config(font="clearlyu")
+        w1.pack(padx=7, pady=10)
 
-        button3 = tk.Button(self, text="Завантажити дані 1 терапії", font="clearlyu",
+        button1 = tk.Button(self, text="Завантажити дані 1 терапії", font="clearlyu",
                             command=self.onOpen1)
-        button3.pack()
+        button1.pack()
 
-        button3 = tk.Button(self, text="Завантажити дані 2 терапії", font="clearlyu",
+        button2 = tk.Button(self, text="Завантажити дані 2 терапії", font="clearlyu",
                             command=self.onOpen2)
-        button3.pack()
+        button2.pack()
 
-        message_button = tk.Button(self, text="Промоделювати", font="clearlyu",
+        button3 = tk.Button(self, text="Промоделювати", font="clearlyu",
                                    command=self.show_message)
-        message_button.pack(padx=14, pady=5, anchor="n")
+        button3.pack(padx=14, pady=5, anchor="n")
 
-        button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
+        button4 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
-        button1.pack(pady=50, padx=50)
+        button4.pack(pady=50, padx=50)
 
     def onOpen1(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
         dlg = fd.Open(self, filetypes=ftypes)
-        fl = dlg.show()
+        self.fl = dlg.show()
 
-        if fl != '':
-            text = self.readFile(fl)
+        if self.fl != '':
+            text = self.readFile(self.fl)
             print(text)
-            label = tk.Label(self, text="1 load " + str(fl.split("/")[-1]), font=LARGE_FONT)
+            label = tk.Label(self, text="1 load " + str(self.fl.split("/")[-1]), font=LARGE_FONT)
             label.pack(pady=0, padx=0)
 
     def onOpen2(self):
         ftypes = [('Python files', '*.xlsx'), ('All files', '*')]
         dlg = fd.Open(self, filetypes=ftypes)
-        fl = dlg.show()
+        self.fl = dlg.show()
 
-        if fl != '':
-            text = self.readFile(fl)
+        if self.fl != '':
+            text = self.readFile(self.fl)
             print(text)
-            label = tk.Label(self, text="2 load " + str(fl.split("/")[-1]), font=LARGE_FONT)
+            label = tk.Label(self, text="2 load " + str(self.fl.split("/")[-1]), font=LARGE_FONT)
             label.pack(pady=0, padx=0)
 
     def readFile(self, filename):
@@ -362,63 +363,63 @@ class PageFive(tk.Frame):
 class PageSix(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="ПРОГНОЗ ВІРУСНОГО АГЕНТА", font=LARGE_FONT)
-        label.pack(pady=2, padx=15)
+        label1 = tk.Label(self, text="ПРОГНОЗ ВІРУСНОГО АГЕНТА", font=LARGE_FONT)
+        label1.pack(pady=2, padx=15)
 
         L1 = Label(self, text="Вік", font="clearlyu")
         L1.pack(padx=3, pady=0)
-        message = StringVar()
-        message_entry = Entry(self, textvariable=message, bd=1)
-        message_entry.pack(padx=7, pady=0)
+        message1 = StringVar()
+        self.message_entry1 = Entry(self, textvariable=message1, bd=1)
+        self.message_entry1.pack(padx=7, pady=0)
 
-        L1 = Label(self, text="Початкова температура тіла (36-42)", font="clearlyu")
-        L1.pack(padx=3, pady=0)
-        message = StringVar()
-        message_entry = Entry(self, textvariable=message, bd=1)
-        message_entry.pack(padx=7, pady=0)
-
-        L2 = Label(self, text="Початковий характер мокротіння", font="clearlyu")
+        L2 = Label(self, text="Початкова температура тіла (36-42)", font="clearlyu")
         L2.pack(padx=3, pady=0)
-        choices = ['Нема', 'Слизове', 'Слизово-гнійне', 'Гнійне']
-        variable = StringVar(self)
-        variable.set('Нема')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        message2 = StringVar()
+        self.message_entry2 = Entry(self, textvariable=message2, bd=1)
+        self.message_entry2.pack(padx=7, pady=0)
 
-        L2 = Label(self, text="Початкова локалізація", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Нема', 'Однобічна', 'Двобічна']
-        variable = StringVar(self)
-        variable.set('Нема')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        L3 = Label(self, text="Початковий характер мокротіння", font="clearlyu")
+        L3.pack(padx=3, pady=0)
+        choices3 = ['Відсутнє', 'Слизове', 'Слизово-гнійне', 'Гнійне']
+        self.variable3 = StringVar(self)
+        self.variable3.set('Відсутнє')
+        w3 = OptionMenu(self, self.variable3, *choices3)
+        w3.config(font="clearlyu")
+        w3.pack(padx=7, pady=0)
 
-        L2 = Label(self, text="Початкова рентгенодинаміка", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Повне розсмоктування', 'Часткове розсмоктування', 'Динаміка відсутня', 'Відм\'ємна динаміка']
-        variable = StringVar(self)
-        variable.set('Повне розсмоктування')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font=("clearlyu", 12))
-        w.pack(padx=7, pady=0)
+        L4 = Label(self, text="Початкова локалізація", font="clearlyu")
+        L4.pack(padx=3, pady=0)
+        choices4 = ['Відсутня', 'Однобічна', 'Двобічна']
+        self.variable4 = StringVar(self)
+        self.variable4.set('Відсутня')
+        w4 = OptionMenu(self, self.variable4, *choices4)
+        w4.config(font="clearlyu")
+        w4.pack(padx=7, pady=0)
 
-        L2 = Label(self, text="Початковий загальний стан", font="clearlyu")
-        L2.pack(padx=3, pady=0)
-        choices = ['Стабільний', 'Середньої важкості', 'Важкий']
-        variable = StringVar(self)
-        variable.set('Стабільний')
-        w = OptionMenu(self, variable, *choices)
-        w.config(font="clearlyu")
-        w.pack(padx=7, pady=0)
+        L5 = Label(self, text="Початкова рентгенодинаміка", font="clearlyu")
+        L5.pack(padx=3, pady=0)
+        choices5 = ['Повне розсмоктування', 'Часткове розсмоктування', 'Динаміка відсутня', 'Відм\'ємна динаміка']
+        self.variable5 = StringVar(self)
+        self.variable5.set('Повне розсмоктування')
+        w5 = OptionMenu(self, self.variable5, *choices5)
+        w5.config(font=("clearlyu", 12))
+        w5.pack(padx=7, pady=0)
 
-        message_button = tk.Button(self, text="Прогноз", font="clearlyu", command=self.show_message)
-        message_button.pack(padx=14, pady=5, anchor="n")
+        L6 = Label(self, text="Початковий загальний стан", font="clearlyu")
+        L6.pack(padx=3, pady=0)
+        choices6 = ['Стабільний', 'Середньої важкості', 'Важкий']
+        self.variable6 = StringVar(self)
+        self.variable6.set('Стабільний')
+        w6 = OptionMenu(self, self.variable6, *choices6)
+        w6.config(font="clearlyu")
+        w6.pack(padx=7, pady=0)
 
-        button1 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
+        button1 = tk.Button(self, text="Прогноз", font="clearlyu", command=self.show_message)
+        button1.pack(padx=14, pady=5, anchor="n")
+
+        button2 = tk.Button(self, text="Повернутись на головну сторінку", font="clearlyu",
                             command=lambda: controller.show_frame(StartPage))
-        button1.pack(pady=2, padx=2)
+        button2.pack(pady=2, padx=2)
 
     def show_message(self):
         TreeDecision.predict()

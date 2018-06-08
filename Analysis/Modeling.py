@@ -281,43 +281,6 @@ def main(num1, num):
         elif num in (7, 8, 9, 10, 11):
             try: comparisonbuildingcurves(num-5)
             except: pass
-    elif num1 == 2:
-        for age in range(1, 4):
-            for virus in range(0, 2):
-                # age = 1,2,3
-                # virus = 0,1
-                # age = float(input("age(1-3): "))
-                # virus = float(input("virus(0-1): "))
-                time = load_data_age("Data.xlsx", age, virus)
-                alfa = 0.05  # уровень значимости
-                n = np.array(time).size - 1  # число степеней свободы
-                t = stats.t(n)
-                tcr = t.ppf(1 - alfa / 2)
-                queue_di = tcr * np.std(np.array(time)) / math.sqrt(np.array(time).size)
-                #print("<queue_mean>", np.mean(np.array(time)))
-                #print("<queue_di>", queue_di)
-                if age == 1:
-                    print('Вікова група: 18-30 років')
-                elif age == 2:
-                    print('Вікова група: 30-60 років')
-                elif age == 3:
-                    print('Вікова група: >60 років')
-                if virus == 0:
-                    print('Противірусний препарат відсутній')
-                elif virus == 1:
-                    print('Противірусний препарат наявний')
-                print('[ ', np.mean(np.array(time)) - queue_di, ' ; ', np.mean(np.array(time)), ' ; ',
-                      np.mean(np.array(time)) + queue_di, ' ]')
-                #print("left", np.mean(np.array(time)) - queue_di)
-                #print("right>", np.mean(np.array(time)) + queue_di)
-
-                #Інший спосіб підрахунку довірчого (те саме)
-                # confidence=0.95
-                # a = 1.0 * np.array(time)
-                # n = len(a)
-                # m, se = np.mean(a), stats.sem(a)
-                # h = se * sp.stats.t._ppf((1 + confidence) / 2., n - 1)
-                # print(m,' e ', m - h,' f ', m + h)
     elif num1 == 3:
         predict()
     plt.show()
