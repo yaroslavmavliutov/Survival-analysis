@@ -296,6 +296,16 @@ class PageFour(tk.Frame):
         button2.pack(pady=2, padx=2)
 
     def show_message(self):
+        if self.variable0.get() == 'Температура тіла':
+            el = 2
+        elif self.variable0.get() == 'Характер мокротіння':
+            el = 3
+        elif self.variable0.get() == 'Локалізація':
+            el = 4
+        elif self.variable0.get() == 'Рентгенодинаміка':
+            el = 5
+        elif self.variable0.get() == 'Загальний стан':
+            el = 6
         Modeling.main(1, self.variable0,
                       [self.message_entry1.get(), self.message_entry2.get(), self.variable3.get(), self.variable4.get(),
                        self.variable5.get(), self.variable6.get()])
@@ -359,7 +369,17 @@ class PageFive(tk.Frame):
         return df
 
     def show_message(self):
-        Modeling.main(1, [self.variable1, self.fl1, self.fl2])
+        if self.variable1.get() == 'Температура тіла':
+            el = 7
+        elif self.variable1.get() == 'Характер мокротіння':
+            el = 8
+        elif self.variable1.get() == 'Локалізація':
+            el = 9
+        elif self.variable1.get() == 'Рентгенодинаміка':
+            el = 10
+        elif self.variable1.get() == 'Загальний стан':
+            el = 11
+        Modeling.main(1, el, [self.fl1, self.fl2])
 
 class PageSix(tk.Frame):
     def __init__(self, parent, controller):

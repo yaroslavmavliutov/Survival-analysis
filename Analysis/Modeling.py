@@ -38,9 +38,7 @@ def load_data_age(name_file, age, virus, temp, mokrota, rentgeno, lokaliz, zagal
             for k in range(col_len):
                  # обмежуємо вибірку за параметрами
                 if num == 1:
-                    if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_temp) == temp and sheet.cell_value(k, column_mokrota) == mokrota \
-                            and sheet.cell_value(k, column_rentgeno) == rentgeno and sheet.cell_value(k, column_lokaliz) == lokaliz \
-                            and sheet.cell_value(k, column_zagaln) == zagaln:
+                    if sheet.cell_value(k, column_AGE) == age and sheet.cell_value(k, column_temp) == temp:
                         time_bed_days.append(sheet.cell_value(k, i))
                 elif num == 0:
                     if sheet.cell_value(k, column_VIRUS) == virus:
@@ -173,6 +171,7 @@ def New_Survive_fun(Y_Array, X_Array):
 def main(num1, num, data):
     #print('1 - Побудова кривих, 2 - Розподіл, 3 - Отримати прогноз вірусного агента')
     #num = int(input("number: "))
+
     if num1 == 1:
         # вік, температура
         # print('0 - Загальне одужання')
@@ -245,9 +244,47 @@ def main(num1, num, data):
             namefile = "Data.xlsx"
             age = 2
             virus = 0
-            print(data)
+            if float(data[0]) < 30:
+                age = 1
+            elif float(data[0]) >= 30 and float(data[0]) < 60:
+                age = 2
+            else: age = 3
 
-            time = load_data_age(namefile, int(data[0]), virus, data[1], data[2], data[4], data[3], data[5], num)
+            if float(data[1]) < 37:
+                temp = 1
+            elif float(data[1]) >= 37 and float(data[1]) < 38:
+                temp = 1
+            else: temp = 2
+
+            if data[2] == 'Відсутнє':
+                mokr = '0'
+            elif data[2] == 'Слизове':
+                mokr = '1'
+            elif data[2] == 'Слизово-гнійне':
+                mokr = '2'
+            else: mokr = '3'
+
+            if data[3] == 'Відсутня':
+                lok = '0'
+            elif data[3] == 'Однобічна':
+                lok = '1'
+            else: lok = '2'
+
+            if data[4] == 'Повне розсмоктування':
+                rent = '1'
+            elif data[4] == 'Часткове розсмоктування':
+                rent = '2'
+            elif data[4] == 'Динаміка відсутня':
+                rent = '3'
+            else: rent = '4'
+
+            if data[5] == 'Стабільний':
+                zag = 1
+            elif data[5] == 'Середньої важкості':
+                zag = 2
+            else: zag = 3
+
+            time = load_data_age(namefile, age, virus, temp, mokr, rent, lok, zag, num)
             # name = 'Age: ' + str(age) + ', Vaccine: ' + str(virus)
             #name = 'Противірусний апарат: ' + str(virus)
             #name = name_a + '. ' + name_v
